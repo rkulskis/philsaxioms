@@ -37,18 +37,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.YamlDataLoader = void 0;
-const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const yaml_1 = __importDefault(require("yaml"));
 const chokidar_1 = __importDefault(require("chokidar"));
-class YamlDataLoader {
+const shared_1 = require("@philsaxioms/shared");
+class YamlDataLoader extends shared_1.YamlLoaderBase {
     constructor(dataPath) {
+        super(path.resolve(dataPath));
         this.cache = null;
         this.questionnaireCache = null;
         this.watcher = null;
         this.callbacks = [];
-        this.dataPath = path.resolve(dataPath);
         this.setupWatcher();
+    }
+    parseYaml(content) {
+        return yaml_1.default.parse(content);
     }
     setupWatcher() {
         this.watcher = chokidar_1.default.watch(this.dataPath, {
@@ -79,14 +82,9 @@ class YamlDataLoader {
     onDataChange(callback) {
         this.callbacks.push(callback);
     }
-    loadYamlFile(filePath) {
+    loadYamlFileWithNull(filePath) {
         try {
-            const fullPath = path.join(this.dataPath, filePath);
-            if (!fs.existsSync(fullPath)) {
-                return null;
-            }
-            const content = fs.readFileSync(fullPath, 'utf8');
-            return yaml_1.default.parse(content);
+            return super.loadYamlFile(this.getDataPath(filePath));
         }
         catch (error) {
             console.error(`Error loading YAML file ${filePath}:`, error);
@@ -94,35 +92,20 @@ class YamlDataLoader {
         }
     }
     loadYamlFiles(pattern, key) {
-        const results = [];
         try {
-            const dir = path.dirname(pattern);
-            const filename = path.basename(pattern);
-            const fullDir = path.join(this.dataPath, dir);
-            if (!fs.existsSync(fullDir)) {
-                return results;
-            }
-            const files = fs.readdirSync(fullDir)
-                .filter(file => file.endsWith('.yaml') || file.endsWith('.yml'))
-                .filter(file => filename === '*' || file === filename);
-            for (const file of files) {
-                const data = this.loadYamlFile(path.join(dir, file));
-                if (data && data[key] && Array.isArray(data[key])) {
-                    results.push(...data[key]);
-                }
-            }
+            return super.loadYamlFiles(pattern, key);
         }
         catch (error) {
             console.error(`Error loading YAML files with pattern ${pattern}:`, error);
+            return [];
         }
-        return results;
     }
     async loadGraphData() {
         if (this.cache) {
             return this.cache;
         }
         console.log('Loading graph data from YAML files...');
-        const categories = this.loadYamlFile('categories.yaml')?.categories || [];
+        const categories = this.loadYamlFileWithNull('categories.yaml')?.categories || [];
         const axioms = this.loadYamlFiles('axioms/*', 'axioms');
         const argumentNodes = this.loadYamlFiles('arguments/*', 'arguments');
         const edges = this.loadYamlFiles('edges/*', 'edges');
@@ -139,7 +122,7 @@ class YamlDataLoader {
         if (this.questionnaireCache) {
             return this.questionnaireCache;
         }
-        const data = this.loadYamlFile('questionnaire.yaml');
+        const data = this.loadYamlFileWithNull('questionnaire.yaml');
         this.questionnaireCache = data?.questionnaire || [];
         return this.questionnaireCache;
     }

@@ -5,6 +5,13 @@ export interface AxiomCategory {
   description?: string;
 }
 
+export interface ActivationConditions {
+  required_axioms?: string[];
+  forbidden_axioms?: string[];
+  required_arguments?: string[];
+  forbidden_arguments?: string[];
+}
+
 export interface Axiom {
   id: string;
   title: string;
@@ -35,12 +42,7 @@ export interface Argument {
     y: number;
   };
   dependencies?: string[]; // axiom or argument IDs this depends on
-  activation_conditions?: {
-    required_axioms?: string[];
-    forbidden_axioms?: string[];
-    required_arguments?: string[];
-    forbidden_arguments?: string[];
-  };
+  activation_conditions?: ActivationConditions;
   metadata?: {
     difficulty?: 'basic' | 'intermediate' | 'advanced';
     source?: string;

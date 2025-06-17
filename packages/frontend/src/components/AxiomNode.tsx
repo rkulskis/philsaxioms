@@ -2,6 +2,7 @@ import { Handle, Position } from 'reactflow';
 import { motion } from 'framer-motion';
 import { Axiom, AxiomCategory } from '@philsaxioms/shared';
 import clsx from 'clsx';
+import { nodeAnimations, cardAnimations } from '../utils/animations';
 
 interface AxiomNodeProps {
   data: {
@@ -21,14 +22,6 @@ export default function AxiomNode({ data }: AxiomNodeProps) {
     onSelect(axiom);
   };
 
-  const snapAnimation = {
-    scale: [1, 1.1, 1],
-    rotate: [0, 2, -2, 0],
-    transition: {
-      duration: 0.4,
-      ease: "easeInOut"
-    }
-  };
 
   return (
     <motion.div
@@ -46,11 +39,11 @@ export default function AxiomNode({ data }: AxiomNodeProps) {
         borderColor: !isAccepted && !isRejected ? category.color : undefined,
       }}
       onClick={handleClick}
-      whileHover={{ scale: 1.05, y: -5 }}
-      whileTap={{ scale: 0.95 }}
-      initial={{ opacity: 0, y: 20 }}
-      animate={isSelected ? snapAnimation : { opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      whileHover={nodeAnimations.hover}
+      whileTap={nodeAnimations.tap}
+      variants={cardAnimations}
+      initial="hidden"
+      animate={isSelected ? nodeAnimations.snap : "visible"}
     >
       {/* Lego-style connectors */}
       <motion.div 

@@ -1,82 +1,51 @@
 import { Router } from 'express';
 import { YamlDataLoader } from './yaml-loader';
-import { UserSession } from '@philsaxioms/shared';
+import { UserSession, generateSessionId, generateSnapshotId } from '@philsaxioms/shared';
+import { ResponseHandler } from './utils/response-handler';
 
 export function createRoutes(dataLoader: YamlDataLoader): Router {
   const router = Router();
 
   // Get all graph data (axioms, edges, categories)
-  router.get('/api/graph', async (req, res) => {
-    try {
-      const data = await dataLoader.loadGraphData();
-      res.json(data);
-    } catch (error) {
-      console.error('Error loading graph data:', error);
-      res.status(500).json({ error: 'Failed to load graph data' });
-    }
-  });
+  router.get('/api/graph', ResponseHandler.createDataRoute(
+    () => dataLoader.loadGraphData(),
+    'Failed to load graph data'
+  ));
 
   // Get questionnaire items
-  router.get('/api/questionnaire', async (req, res) => {
-    try {
-      const questionnaire = await dataLoader.loadQuestionnaire();
-      res.json(questionnaire);
-    } catch (error) {
-      console.error('Error loading questionnaire:', error);
-      res.status(500).json({ error: 'Failed to load questionnaire' });
-    }
-  });
+  router.get('/api/questionnaire', ResponseHandler.createDataRoute(
+    () => dataLoader.loadQuestionnaire(),
+    'Failed to load questionnaire'
+  ));
 
   // Get specific axiom by ID
-  router.get('/api/axioms/:id', async (req, res) => {
-    try {
-      const axiom = await dataLoader.getAxiomById(req.params.id);
-      if (!axiom) {
-        return res.status(404).json({ error: 'Axiom not found' });
-      }
-      res.json(axiom);
-    } catch (error) {
-      console.error('Error loading axiom:', error);
-      res.status(500).json({ error: 'Failed to load axiom' });
-    }
-  });
+  router.get('/api/axioms/:id', ResponseHandler.createFindByIdRoute(
+    (id: string) => dataLoader.getAxiomById(id),
+    'Failed to load axiom',
+    'Axiom not found'
+  ));
 
   // Get axioms by category
-  router.get('/api/axioms/category/:category', async (req, res) => {
-    try {
-      const axioms = await dataLoader.getAxiomsByCategory(req.params.category);
-      res.json(axioms);
-    } catch (error) {
-      console.error('Error loading axioms by category:', error);
-      res.status(500).json({ error: 'Failed to load axioms' });
-    }
-  });
+  router.get('/api/axioms/category/:category', ResponseHandler.wrapAsyncRoute(async (req, res) => {
+    const axioms = await dataLoader.getAxiomsByCategory(req.params.category);
+    ResponseHandler.handleSuccess(res, axioms);
+  }));
 
   // Get connected nodes (axioms or arguments)
-  router.get('/api/nodes/:id/connections', async (req, res) => {
-    try {
-      const connections = await dataLoader.getConnectedNodes(req.params.id);
-      res.json(connections);
-    } catch (error) {
-      console.error('Error loading connections:', error);
-      res.status(500).json({ error: 'Failed to load connections' });
-    }
-  });
+  router.get('/api/nodes/:id/connections', ResponseHandler.wrapAsyncRoute(async (req, res) => {
+    const connections = await dataLoader.getConnectedNodes(req.params.id);
+    ResponseHandler.handleSuccess(res, connections);
+  }));
 
   // Get specific argument by ID
-  router.get('/api/arguments/:id', async (req, res) => {
-    try {
+  router.get('/api/arguments/:id', ResponseHandler.createFindByIdRoute(
+    async (id: string) => {
       const data = await dataLoader.loadGraphData();
-      const argument = data.arguments.find(arg => arg.id === req.params.id);
-      if (!argument) {
-        return res.status(404).json({ error: 'Argument not found' });
-      }
-      res.json(argument);
-    } catch (error) {
-      console.error('Error loading argument:', error);
-      res.status(500).json({ error: 'Failed to load argument' });
-    }
-  });
+      return data.arguments.find(arg => arg.id === id) || null;
+    },
+    'Failed to load argument',
+    'Argument not found'
+  ));
 
   // Simple in-memory storage (replace with database in production)
   const sessions = new Map<string, UserSession>();
@@ -87,7 +56,7 @@ export function createRoutes(dataLoader: YamlDataLoader): Router {
     const { acceptedAxioms = [], rejectedAxioms = [] } = req.body;
     
     const session: UserSession = {
-      id: Math.random().toString(36).substr(2, 9),
+      id: generateSessionId(),
       acceptedAxioms,
       rejectedAxioms,
       exploredConnections: [],
@@ -144,7 +113,7 @@ export function createRoutes(dataLoader: YamlDataLoader): Router {
       );
 
       const snapshot = {
-        id: Math.random().toString(36).substr(2, 9),
+        id: generateSnapshotId(),
         title,
         description,
         axioms: relevantAxioms,

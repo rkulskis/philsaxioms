@@ -2,81 +2,31 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createRoutes = createRoutes;
 const express_1 = require("express");
+const shared_1 = require("@philsaxioms/shared");
+const response_handler_1 = require("./utils/response-handler");
 function createRoutes(dataLoader) {
     const router = (0, express_1.Router)();
     // Get all graph data (axioms, edges, categories)
-    router.get('/api/graph', async (req, res) => {
-        try {
-            const data = await dataLoader.loadGraphData();
-            res.json(data);
-        }
-        catch (error) {
-            console.error('Error loading graph data:', error);
-            res.status(500).json({ error: 'Failed to load graph data' });
-        }
-    });
+    router.get('/api/graph', response_handler_1.ResponseHandler.createDataRoute(() => dataLoader.loadGraphData(), 'Failed to load graph data'));
     // Get questionnaire items
-    router.get('/api/questionnaire', async (req, res) => {
-        try {
-            const questionnaire = await dataLoader.loadQuestionnaire();
-            res.json(questionnaire);
-        }
-        catch (error) {
-            console.error('Error loading questionnaire:', error);
-            res.status(500).json({ error: 'Failed to load questionnaire' });
-        }
-    });
+    router.get('/api/questionnaire', response_handler_1.ResponseHandler.createDataRoute(() => dataLoader.loadQuestionnaire(), 'Failed to load questionnaire'));
     // Get specific axiom by ID
-    router.get('/api/axioms/:id', async (req, res) => {
-        try {
-            const axiom = await dataLoader.getAxiomById(req.params.id);
-            if (!axiom) {
-                return res.status(404).json({ error: 'Axiom not found' });
-            }
-            res.json(axiom);
-        }
-        catch (error) {
-            console.error('Error loading axiom:', error);
-            res.status(500).json({ error: 'Failed to load axiom' });
-        }
-    });
+    router.get('/api/axioms/:id', response_handler_1.ResponseHandler.createFindByIdRoute((id) => dataLoader.getAxiomById(id), 'Failed to load axiom', 'Axiom not found'));
     // Get axioms by category
-    router.get('/api/axioms/category/:category', async (req, res) => {
-        try {
-            const axioms = await dataLoader.getAxiomsByCategory(req.params.category);
-            res.json(axioms);
-        }
-        catch (error) {
-            console.error('Error loading axioms by category:', error);
-            res.status(500).json({ error: 'Failed to load axioms' });
-        }
-    });
+    router.get('/api/axioms/category/:category', response_handler_1.ResponseHandler.wrapAsyncRoute(async (req, res) => {
+        const axioms = await dataLoader.getAxiomsByCategory(req.params.category);
+        response_handler_1.ResponseHandler.handleSuccess(res, axioms);
+    }));
     // Get connected nodes (axioms or arguments)
-    router.get('/api/nodes/:id/connections', async (req, res) => {
-        try {
-            const connections = await dataLoader.getConnectedNodes(req.params.id);
-            res.json(connections);
-        }
-        catch (error) {
-            console.error('Error loading connections:', error);
-            res.status(500).json({ error: 'Failed to load connections' });
-        }
-    });
+    router.get('/api/nodes/:id/connections', response_handler_1.ResponseHandler.wrapAsyncRoute(async (req, res) => {
+        const connections = await dataLoader.getConnectedNodes(req.params.id);
+        response_handler_1.ResponseHandler.handleSuccess(res, connections);
+    }));
     // Get specific argument by ID
-    router.get('/api/arguments/:id', async (req, res) => {
-        try {
-            const data = await dataLoader.loadGraphData();
-            const argument = data.arguments.find(arg => arg.id === req.params.id);
-            if (!argument) {
-                return res.status(404).json({ error: 'Argument not found' });
-            }
-            res.json(argument);
-        }
-        catch (error) {
-            console.error('Error loading argument:', error);
-            res.status(500).json({ error: 'Failed to load argument' });
-        }
-    });
+    router.get('/api/arguments/:id', response_handler_1.ResponseHandler.createFindByIdRoute(async (id) => {
+        const data = await dataLoader.loadGraphData();
+        return data.arguments.find(arg => arg.id === id) || null;
+    }, 'Failed to load argument', 'Argument not found'));
     // Simple in-memory storage (replace with database in production)
     const sessions = new Map();
     const snapshots = new Map();
@@ -84,7 +34,7 @@ function createRoutes(dataLoader) {
     router.post('/api/sessions', (req, res) => {
         const { acceptedAxioms = [], rejectedAxioms = [] } = req.body;
         const session = {
-            id: Math.random().toString(36).substr(2, 9),
+            id: (0, shared_1.generateSessionId)(),
             acceptedAxioms,
             rejectedAxioms,
             exploredConnections: [],
@@ -131,7 +81,7 @@ function createRoutes(dataLoader) {
             const relevantAxioms = session.acceptedAxioms;
             const relevantEdges = data.edges.filter(edge => relevantAxioms.includes(edge.fromNode) && relevantAxioms.includes(edge.toNode));
             const snapshot = {
-                id: Math.random().toString(36).substr(2, 9),
+                id: (0, shared_1.generateSnapshotId)(),
                 title,
                 description,
                 axioms: relevantAxioms,

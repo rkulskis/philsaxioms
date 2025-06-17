@@ -1,8 +1,15 @@
 import { GraphData, QuestionnaireItem, UserSession } from '@philsaxioms/shared';
+import { BrowserHttpClient } from '../utils/browser-http-client';
+import { generateSessionId, generateSnapshotId } from '../utils/id-generator';
 
 class StaticApiClient {
   private graphDataCache: GraphData | null = null;
   private questionnaireCache: QuestionnaireItem[] | null = null;
+  private httpClient: BrowserHttpClient;
+
+  constructor() {
+    this.httpClient = new BrowserHttpClient('/philsaxioms');
+  }
 
   async getGraphData(): Promise<GraphData> {
     if (this.graphDataCache) {
@@ -10,12 +17,8 @@ class StaticApiClient {
     }
 
     try {
-      const response = await fetch('/philsaxioms/graph-data.json');
-      if (!response.ok) {
-        throw new Error(`Failed to fetch graph data: ${response.statusText}`);
-      }
-      this.graphDataCache = await response.json();
-      return this.graphDataCache!;
+      this.graphDataCache = await this.httpClient.get<GraphData>('/graph-data.json');
+      return this.graphDataCache;
     } catch (error) {
       console.error('Error loading graph data:', error);
       throw error;
@@ -28,12 +31,8 @@ class StaticApiClient {
     }
 
     try {
-      const response = await fetch('/philsaxioms/questionnaire.json');
-      if (!response.ok) {
-        throw new Error(`Failed to fetch questionnaire: ${response.statusText}`);
-      }
-      this.questionnaireCache = await response.json();
-      return this.questionnaireCache!;
+      this.questionnaireCache = await this.httpClient.get<QuestionnaireItem[]>('/questionnaire.json');
+      return this.questionnaireCache;
     } catch (error) {
       console.error('Error loading questionnaire:', error);
       throw error;
@@ -43,7 +42,7 @@ class StaticApiClient {
   async createSession(): Promise<UserSession> {
     // Generate a simple client-side session
     return {
-      id: this.generateSessionId(),
+      id: generateSessionId(),
       acceptedAxioms: [],
       rejectedAxioms: [],
       createdAt: new Date(),
@@ -66,7 +65,7 @@ class StaticApiClient {
     isPublic: boolean
   ): Promise<{ id: string; url: string }> {
     // For static deployment, we'll generate a simple snapshot
-    const snapshotId = this.generateSessionId();
+    const snapshotId = generateSnapshotId();
     const session = this.getStoredSession(sessionId);
     
     // Store snapshot in localStorage
@@ -87,10 +86,6 @@ class StaticApiClient {
     };
   }
 
-  private generateSessionId(): string {
-    return Math.random().toString(36).substring(2, 15) + 
-           Math.random().toString(36).substring(2, 15);
-  }
 
   private getStoredSession(sessionId: string): UserSession {
     const stored = localStorage.getItem(`session_${sessionId}`);

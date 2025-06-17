@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Argument, AxiomCategory } from '@philsaxioms/shared';
 import clsx from 'clsx';
 import { ChevronRight, Target } from 'lucide-react';
+import { nodeAnimations, cardAnimations } from '../utils/animations';
 
 interface ArgumentNodeProps {
   data: {
@@ -45,11 +46,11 @@ export default function ArgumentNode({ data }: ArgumentNodeProps) {
         }
       )}
       onClick={handleClick}
-      whileHover={{ scale: 1.02, y: -2 }}
-      whileTap={{ scale: 0.98 }}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      whileHover={nodeAnimations.hover}
+      whileTap={nodeAnimations.tap}
+      variants={cardAnimations}
+      initial="hidden"
+      animate="visible"
     >
       {/* React Flow handles for connections */}
       <Handle type="target" position={Position.Top} className="opacity-0" id="top" />
