@@ -1,9 +1,9 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react()],
-  base: '/philsaxioms/',  // GitHub Pages subpath
+  base: command === 'build' ? '/philsaxioms/' : '/',  // GitHub Pages subpath only for build
   server: {
     port: 3000,
     proxy: {
@@ -18,4 +18,4 @@ export default defineConfig({
     assetsDir: 'assets',
     sourcemap: false,
   },
-});
+}));
