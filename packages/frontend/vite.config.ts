@@ -1,9 +1,14 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig(({ command }) => ({
+export default defineConfig(({ command }) => {
+  // Use GitHub Pages base path only for production builds, not for static serving
+  const isGitHubPages = process.env.GITHUB_PAGES === 'true';
+  const base = command === 'build' && isGitHubPages ? '/philsaxioms/' : '/';
+  
+  return {
   plugins: [react()],
-  base: command === 'build' ? '/philsaxioms/' : '/',  // GitHub Pages subpath only for build
+  base,
   server: {
     port: 3000,
     proxy: {
@@ -18,4 +23,5 @@ export default defineConfig(({ command }) => ({
     assetsDir: 'assets',
     sourcemap: false,
   },
-}));
+  };
+});

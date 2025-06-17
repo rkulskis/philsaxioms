@@ -21,6 +21,11 @@ Commands:
 
   build               Build all packages for production
 
+  validate            Validate YAML structure and philosophical consistency.
+                      Ensures every argument can be activated through valid
+                      axiom paths, checks for circular dependencies, and
+                      validates logical consistency.
+
   deploy [--gcloud-push]
                       Deploy the app using Google Cloud Run. If
                       '--gcloud-push' is provided, the script will push the
@@ -32,6 +37,7 @@ Examples:
   ./facio static --rebuild
   ./facio test
   ./facio build
+  ./facio validate
   ./facio deploy --gcloud-push
 
 EOF
@@ -103,7 +109,8 @@ case "${1:-}" in
     
     # Check if rebuild flag is passed
     if [[ "${2:-}" == "--rebuild" ]]; then
-      log_info "Rebuilding frontend..."
+      log_info "Rebuilding frontend for static serving..."
+      # Build frontend without GitHub Pages base path
       npm run build --workspace=packages/frontend
     fi
     
@@ -170,6 +177,20 @@ case "${1:-}" in
     npm run build --workspace=packages/frontend
     
     log_success "All packages built successfully!"
+    ;;
+    
+  "validate")
+    log_info "Validating YAML structure and philosophical consistency..."
+    
+    # Run the comprehensive validation
+    node scripts/validate-yaml-structure.js
+    
+    if [ $? -eq 0 ]; then
+      log_success "YAML validation passed!"
+    else
+      log_error "YAML validation failed! Fix the errors before proceeding."
+      exit 1
+    fi
     ;;
     
   "deploy")
