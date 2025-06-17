@@ -1,146 +1,314 @@
 arguments:
-  # LEVEL 1: Direct implications from the 10 axioms
-  
-  # From "Something exists" + "Basic logic"
   - id: objective_reality_exists
-    title: "Objective reality exists"
-    description: "If something exists and logic works, then there must be an objective reality that exists independently of any particular mind's beliefs about it."
-    conclusion: "Reality is objective and mind-independent"
+    title: Objective reality exists
+    description: If something exists and logic works, then there must be an
+      objective reality that exists independently of any particular mind's
+      beliefs about it.
+    conclusion: Reality is objective and mind-independent
     category: metaphysics
     level: 1
+    dependencies:
+      - something_exists
+      - logic_works
+    activation_conditions:
+      required_axioms:
+        - something_exists
+        - logic_works
     metadata:
-      tags: ["objectivity", "reality", "independence"]
+      tags:
+        - objectivity
+        - reality
+        - independence
       strength: 0.8
-      source: "Realist philosophy"
-
-  # From "Patterns exist" + "Minds can reason"
+      source: Realist philosophy
+      attribution:
+        - materialism
+        - aristotle
+      controversy: 0.3
   - id: knowledge_is_possible
-    title: "Knowledge is possible"
-    description: "If patterns exist and reasoning can discover truth, then it's possible to gain genuine knowledge about reality through observation and thinking."
-    conclusion: "Humans can acquire reliable knowledge about the world"
+    title: Knowledge is possible
+    description: If patterns exist and reasoning can discover truth, then it's
+      possible to gain genuine knowledge about reality through observation and
+      thinking.
+    conclusion: Humans can acquire reliable knowledge about the world
     category: epistemology
     level: 1
+    dependencies:
+      - patterns_exist
+      - minds_can_reason
+    activation_conditions:
+      required_axioms:
+        - patterns_exist
+        - minds_can_reason
     metadata:
-      tags: ["knowledge", "epistemology", "truth"]
+      tags:
+        - knowledge
+        - epistemology
+        - truth
       strength: 0.9
-      source: "Empirical rationalism"
-
-  # From "Differences matter" + "Suffering exists"
+      source: Empirical rationalism
+      attribution:
+        - empiricism
+        - rationalism
+        - kant
+      controversy: 0.2
   - id: moral_facts_exist
-    title: "Moral facts exist"
-    description: "If differences matter and suffering exists, then it matters whether suffering occurs or not, creating objective moral facts."
-    conclusion: "Some actions are objectively better or worse than others"
+    title: Moral facts exist
+    description: If differences matter and suffering exists, then it matters whether
+      suffering occurs or not, creating objective moral facts.
+    conclusion: Some actions are objectively better or worse than others
     category: ethics
     level: 1
     metadata:
-      tags: ["moral realism", "objectivity", "ethics"]
+      tags:
+        - moral realism
+        - objectivity
+        - ethics
       strength: 0.7
-      source: "Moral realism"
-
-  # From "Actions have consequences" + "Choice exists"
+      source: Moral realism
+      attribution:
+        - virtue_ethics
+        - deontology
+        - aquinas
+      controversy: 0.5
+    dependencies:
+      - differences_matter
+      - suffering_exists
+    activation_conditions:
+      required_axioms:
+        - differences_matter
+        - suffering_exists
   - id: moral_responsibility_exists
-    title: "Moral responsibility exists"
-    description: "If actions have consequences and choices can be made, then agents can be held responsible for the outcomes of their freely chosen actions."
-    conclusion: "People are morally responsible for their choices"
+    title: Moral responsibility exists
+    description: If actions have consequences and choices can be made, then agents
+      can be held responsible for the outcomes of their freely chosen actions.
+    conclusion: People are morally responsible for their choices
     category: ethics
     level: 1
     metadata:
-      tags: ["responsibility", "freedom", "accountability"]
+      tags:
+        - responsibility
+        - freedom
+        - accountability
       strength: 0.8
-      source: "Libertarian ethics"
-
-  # From "Communication possible" + "Minds can reason"
+      source: Libertarian ethics
+      attribution:
+        - deontology
+        - virtue_ethics
+        - kant
+      controversy: 0.4
+    dependencies:
+      - actions_have_consequences
+      - choice_exists
+    activation_conditions:
+      required_axioms:
+        - actions_have_consequences
+        - choice_exists
   - id: rational_discourse_possible
-    title: "Rational discourse is possible"
-    description: "If communication between minds is possible and reasoning can discover truth, then people can share ideas and potentially reach agreement through rational discussion."
-    conclusion: "Meaningful dialogue and persuasion are possible"
+    title: Rational discourse is possible
+    description: If communication between minds is possible and reasoning can
+      discover truth, then people can share ideas and potentially reach
+      agreement through rational discussion.
+    conclusion: Meaningful dialogue and persuasion are possible
     category: epistemology
     level: 1
     metadata:
-      tags: ["discourse", "rationality", "communication"]
+      tags:
+        - discourse
+        - rationality
+        - communication
       strength: 0.8
-      source: "Rational dialogue tradition"
-
-  # From "Cooperation possible" + "Actions have consequences"
+      source: Rational dialogue tradition
+      attribution:
+        - rationalism
+        - empiricism
+        - voltaire
+      controversy: 0.2
+    dependencies:
+      - communication_possible
+      - minds_can_reason
+    activation_conditions:
+      required_axioms:
+        - communication_possible
+        - minds_can_reason
   - id: social_contracts_possible
-    title: "Social cooperation and agreements are possible"
-    description: "If cooperation is possible and actions have consequences, then people can form mutually beneficial agreements and social structures."
-    conclusion: "Society and governance can be legitimately organized"
+    title: Social cooperation and agreements are possible
+    description: If cooperation is possible and actions have consequences, then
+      people can form mutually beneficial agreements and social structures.
+    conclusion: Society and governance can be legitimately organized
     category: political
     level: 1
     metadata:
-      tags: ["cooperation", "society", "agreements"]
+      tags:
+        - cooperation
+        - society
+        - agreements
       strength: 0.8
-      source: "Social contract theory"
-
-  # From "Patterns exist" + "Actions have consequences"
+      source: Social contract theory
+      attribution:
+        - social_contract
+        - locke
+        - rousseau
+      controversy: 0.3
+    dependencies:
+      - cooperation_possible
+      - actions_have_consequences
+    activation_conditions:
+      required_axioms:
+        - cooperation_possible
+        - actions_have_consequences
   - id: causal_laws_exist
-    title: "Causal laws govern reality"
-    description: "If patterns exist and actions have consequences, then reality operates according to discoverable causal laws and regularities."
-    conclusion: "The universe operates according to natural laws"
+    title: Causal laws govern reality
+    description: If patterns exist and actions have consequences, then reality
+      operates according to discoverable causal laws and regularities.
+    conclusion: The universe operates according to natural laws
     category: metaphysics
     level: 1
     metadata:
-      tags: ["causation", "natural laws", "regularity"]
+      tags:
+        - causation
+        - natural laws
+        - regularity
       strength: 0.8
-      source: "Scientific naturalism"
-
-  # From "Something exists" + "Patterns exist"
+      source: Scientific naturalism
+      attribution:
+        - empiricism
+        - materialism
+        - hume
+      controversy: 0.2
+    dependencies:
+      - patterns_exist
+      - actions_have_consequences
+    activation_conditions:
+      required_axioms:
+        - patterns_exist
+        - actions_have_consequences
   - id: stable_reality_exists
-    title: "Reality has stable structure"
-    description: "If something exists and patterns exist, then reality has some stable, persistent structure that enables consistent patterns."
-    conclusion: "The world has an underlying stable structure"
+    title: Reality has stable structure
+    description: If something exists and patterns exist, then reality has some
+      stable, persistent structure that enables consistent patterns.
+    conclusion: The world has an underlying stable structure
     category: metaphysics
     level: 1
     metadata:
-      tags: ["stability", "structure", "persistence"]
+      tags:
+        - stability
+        - structure
+        - persistence
       strength: 0.8
-      source: "Structural realism"
-
-  # From "Choice exists" + "Differences matter"
+      source: Structural realism
+      attribution:
+        - materialism
+        - empiricism
+      controversy: 0.2
+    dependencies:
+      - something_exists
+      - patterns_exist
+    activation_conditions:
+      required_axioms:
+        - something_exists
+        - patterns_exist
   - id: values_guide_choices
-    title: "Values can guide rational choice"
-    description: "If choices can be made and differences matter, then rational agents can use values and preferences to guide their decision-making."
-    conclusion: "Rational value-based decision making is possible"
+    title: Values can guide rational choice
+    description: If choices can be made and differences matter, then rational agents
+      can use values and preferences to guide their decision-making.
+    conclusion: Rational value-based decision making is possible
     category: ethics
     level: 1
     metadata:
-      tags: ["values", "choice", "rationality"]
+      tags:
+        - values
+        - choice
+        - rationality
       strength: 0.8
-      source: "Rational choice theory"
-
-  # From "Suffering exists" + "Actions have consequences"
+      source: Rational choice theory
+      attribution:
+        - virtue_ethics
+        - existentialism
+      controversy: 0.3
+    dependencies:
+      - choice_exists
+      - differences_matter
+    activation_conditions:
+      required_axioms:
+        - choice_exists
+        - differences_matter
   - id: harm_prevention_matters
-    title: "Preventing unnecessary harm matters"
-    description: "If suffering exists and actions have consequences, then actions that prevent or reduce unnecessary suffering have moral significance."
-    conclusion: "We have moral reasons to prevent unnecessary suffering"
+    title: Preventing unnecessary harm matters
+    description: If suffering exists and actions have consequences, then actions
+      that prevent or reduce unnecessary suffering have moral significance.
+    conclusion: We have moral reasons to prevent unnecessary suffering
     category: ethics
     level: 1
     metadata:
-      tags: ["harm prevention", "suffering", "moral duty"]
+      tags:
+        - harm prevention
+        - suffering
+        - moral duty
       strength: 0.9
-      source: "Utilitarian tradition"
-
-  # From "Logic works" + "Communication possible"
+      source: Utilitarian tradition
+      attribution:
+        - utilitarianism
+        - mill
+        - jesus
+      controversy: 0.2
+    dependencies:
+      - suffering_exists
+      - actions_have_consequences
+    activation_conditions:
+      required_axioms:
+        - suffering_exists
+        - actions_have_consequences
   - id: shared_reasoning_possible
-    title: "Shared standards of reasoning are possible"
-    description: "If logic is reliable and communication between minds is possible, then people can share and apply common standards of reasoning."
-    conclusion: "Universal logical principles can guide human thought"
+    title: Shared standards of reasoning are possible
+    description: If logic is reliable and communication between minds is possible,
+      then people can share and apply common standards of reasoning.
+    conclusion: Universal logical principles can guide human thought
     category: logic
     level: 1
     metadata:
-      tags: ["shared reasoning", "logical standards", "universality"]
+      tags:
+        - shared reasoning
+        - logical standards
+        - universality
       strength: 0.9
-      source: "Logic and rationality"
-
-  # From "Cooperation possible" + "Moral facts exist"
+      source: Logic and rationality
+      attribution:
+        - rationalism
+        - empiricism
+      controversy: 0.2
+    dependencies:
+      - logic_works
+      - communication_possible
+    activation_conditions:
+      required_axioms:
+        - logic_works
+        - communication_possible
   - id: justice_possible
-    title: "Justice and fairness are achievable"
-    description: "If cooperation is possible and moral facts exist, then people can work together to create just institutions based on objective moral principles."
-    conclusion: "Just societies can be established and maintained"
+    title: Justice and fairness are achievable
+    description: If cooperation is possible and moral facts exist, then people can
+      work together to create just institutions based on objective moral
+      principles.
+    conclusion: Just societies can be established and maintained
     category: political
     level: 1
     metadata:
-      tags: ["justice", "fairness", "institutions"]
+      tags:
+        - justice
+        - fairness
+        - institutions
       strength: 0.7
-      source: "Political philosophy"
+      source: Political philosophy
+      attribution:
+        - social_contract
+        - rawls
+        - aristotle
+      controversy: 0.4
+    dependencies:
+      - cooperation_possible
+      - moral_facts_exist
+    activation_conditions:
+      required_axioms:
+        - cooperation_possible
+      required_arguments:
+        - moral_facts_exist

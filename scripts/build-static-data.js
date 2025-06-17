@@ -46,13 +46,21 @@ const axioms = loadYamlFiles('axioms/*.yaml', 'axioms');
 const arguments = loadYamlFiles('arguments/*.yaml', 'arguments');
 const edges = loadYamlFiles('edges/*.yaml', 'edges');
 const questionnaire = loadYamlFile(path.join(dataDir, 'questionnaire.yaml'))?.questionnaire || [];
+const sources = loadYamlFile(path.join(dataDir, 'sources.yaml'))?.sources || {};
+
+// Convert sources object to array with IDs
+const sourcesArray = Object.entries(sources).map(([id, source]) => ({
+  id,
+  ...source
+}));
 
 // Create combined data file
 const graphData = {
   categories,
   axioms,
   arguments,
-  edges
+  edges,
+  sources: sourcesArray
 };
 
 // Write JSON files
@@ -71,5 +79,6 @@ console.log(`- ${axioms.length} axioms`);
 console.log(`- ${arguments.length} arguments`);
 console.log(`- ${edges.length} edges`);
 console.log(`- ${categories.length} categories`);
+console.log(`- ${sourcesArray.length} sources`);
 console.log(`- ${questionnaire.length} questionnaire items`);
 console.log('Static data generation complete!');

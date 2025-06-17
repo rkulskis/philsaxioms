@@ -1,122 +1,391 @@
 arguments:
-  # LEVEL 3: Advanced arguments building on Level 2 conclusions
-  
-  # Building on scientific method + metaphysical realism
   - id: naturalism_well_supported
-    title: "Naturalism is well-supported"
-    description: "If science discovers objective truths and metaphysical realism is true, then the naturalistic worldview that relies on scientific methods is strongly supported."
-    conclusion: "The natural world as described by science is likely all that exists"
+    title: Naturalism is well-supported
+    description: If science discovers objective truths and metaphysical realism is
+      true, then the naturalistic worldview that relies on scientific methods is
+      strongly supported.
+    conclusion: The natural world as described by science is likely all that exists
     category: metaphysics
     level: 3
     metadata:
-      tags: ["naturalism", "scientific worldview", "metaphysics"]
+      tags:
+        - naturalism
+        - scientific worldview
+        - metaphysics
       strength: 0.7
-      source: "Scientific naturalism"
-
-  # Building on moral progress + universal rationality
+      source: Scientific naturalism
+      attribution:
+        - materialism
+        - empiricism
+        - simons
+      controversy: 0.4
+    dependencies:
+      - scientific_method_valid
+      - metaphysical_realism_true
+    activation_conditions:
+      required_arguments:
+        - scientific_method_valid
+        - metaphysical_realism_true
   - id: enlightenment_project_valid
-    title: "The Enlightenment project is valid"
-    description: "If moral progress is possible and universal rationality exists, then the Enlightenment goal of using reason to improve human conditions is a valid and achievable project."
-    conclusion: "Reason can guide humanity toward better societies and institutions"
+    title: The Enlightenment project is valid
+    description: If moral progress is possible and universal rationality exists,
+      then the Enlightenment goal of using reason to improve human conditions is
+      a valid and achievable project.
+    conclusion: Reason can guide humanity toward better societies and institutions
     category: political
     level: 3
     metadata:
-      tags: ["enlightenment", "reason", "progress"]
+      tags:
+        - enlightenment
+        - reason
+        - progress
       strength: 0.7
-      source: "Enlightenment philosophy"
-
-  # Building on prediction/control + human rights
+      source: Enlightenment philosophy
+      attribution:
+        - rationalism
+        - voltaire
+        - kant
+      controversy: 0.3
+    dependencies:
+      - moral_progress_possible
+      - universal_rationality_possible
+    activation_conditions:
+      required_arguments:
+        - moral_progress_possible
+        - universal_rationality_possible
   - id: technology_must_serve_humanity
-    title: "Technology must serve human dignity"
-    description: "If prediction and control of nature is possible and universal human rights exist, then technological development should be guided by respect for human dignity and rights."
-    conclusion: "Technological progress must be ethically constrained"
+    title: Technology must serve human dignity
+    description: If prediction and control of nature is possible and universal human
+      rights exist, then technological development should be guided by respect
+      for human dignity and rights.
+    conclusion: Technological progress must be ethically constrained
     category: ethics
     level: 3
+    dependencies:
+      - prediction_and_control_possible
+      - human_rights_universal
+    activation_conditions:
+      required_arguments:
+        - prediction_and_control_possible
+        - human_rights_universal
     metadata:
-      tags: ["technology ethics", "human dignity", "responsible innovation"]
+      tags:
+        - technology ethics
+        - human dignity
+        - responsible innovation
       strength: 0.8
-      source: "Technology ethics"
-
-  # Building on legitimate government + rule of law
+      source: Technology ethics
+      attribution:
+        - kant
+        - natural_law
+      controversy: 0.3
   - id: constitutional_democracy_optimal
-    title: "Constitutional democracy is optimal"
-    description: "If legitimate government is possible and rule of law is essential, then constitutional democracies that limit power through law provide the best form of government."
-    conclusion: "Constitutional democratic systems best protect liberty and enable flourishing"
+    title: Constitutional democracy is optimal
+    description: If legitimate government is possible and rule of law is essential,
+      then constitutional democracies that limit power through law provide the
+      best form of government.
+    conclusion: Constitutional democratic systems best protect liberty and enable
+      flourishing
     category: political
     level: 3
     metadata:
-      tags: ["constitutional democracy", "separation of powers", "optimal government"]
+      tags:
+        - constitutional democracy
+        - separation of powers
+        - optimal government
       strength: 0.7
-      source: "Democratic constitutionalism"
-
-  # Building on ethical obligations + objective values
+      source: Democratic constitutionalism
+      attribution:
+        - social_contract
+        - locke
+        - rawls
+      controversy: 0.3
+    dependencies:
+      - legitimate_government_possible
+      - rule_of_law_essential
+    activation_conditions:
+      required_arguments:
+        - legitimate_government_possible
+        - rule_of_law_essential
   - id: virtue_ethics_valid
-    title: "Virtue ethics provides moral guidance"
-    description: "If we have ethical obligations to others and objective values exist, then cultivating virtuous character traits that align with objective values is morally important."
-    conclusion: "Character development and virtue cultivation are central to ethics"
+    title: Virtue ethics provides moral guidance
+    description: If we have ethical obligations to others and objective values
+      exist, then cultivating virtuous character traits that align with
+      objective values is morally important.
+    conclusion: Character development and virtue cultivation are central to ethics
     category: ethics
     level: 3
     metadata:
-      tags: ["virtue ethics", "character", "moral development"]
+      tags:
+        - virtue ethics
+        - character
+        - moral development
       strength: 0.6
-      source: "Aristotelian virtue ethics"
-
-  # Building on philosophical inquiry + scientific method
+      source: Aristotelian virtue ethics
+      attribution:
+        - virtue_ethics
+        - aristotle
+      controversy: 0.4
+    dependencies:
+      - ethical_obligations_exist
+      - objective_values_exist
+    activation_conditions:
+      required_arguments:
+        - ethical_obligations_exist
+        - objective_values_exist
   - id: interdisciplinary_inquiry_valuable
-    title: "Interdisciplinary inquiry enhances understanding"
-    description: "If philosophical inquiry has value and science discovers truths, then combining philosophical reflection with scientific investigation yields deeper understanding."
-    conclusion: "Philosophy and science should collaborate to address fundamental questions"
+    title: Interdisciplinary inquiry enhances understanding
+    description: If philosophical inquiry has value and science discovers truths,
+      then combining philosophical reflection with scientific investigation
+      yields deeper understanding.
+    conclusion: Philosophy and science should collaborate to address fundamental questions
     category: epistemology
     level: 3
     metadata:
-      tags: ["interdisciplinary", "philosophy of science", "collaboration"]
+      tags:
+        - interdisciplinary
+        - philosophy of science
+        - collaboration
       strength: 0.8
-      source: "Philosophy of science"
-
-  # Building on natural kinds + universal rationality
+      source: Philosophy of science
+      attribution:
+        - empiricism
+        - rationalism
+      controversy: 0.2
+    dependencies:
+      - philosophical_inquiry_valuable
+      - scientific_method_valid
+    activation_conditions:
+      required_arguments:
+        - philosophical_inquiry_valuable
+        - scientific_method_valid
   - id: scientific_realism_about_theories
-    title: "Scientific theories refer to real entities"
-    description: "If natural kinds exist and universal rationality is possible, then successful scientific theories genuinely refer to real structures and entities in nature."
-    conclusion: "Theoretical entities postulated by science likely exist"
+    title: Scientific theories refer to real entities
+    description: If natural kinds exist and universal rationality is possible, then
+      successful scientific theories genuinely refer to real structures and
+      entities in nature.
+    conclusion: Theoretical entities postulated by science likely exist
     category: epistemology
     level: 3
     metadata:
-      tags: ["scientific realism", "theoretical entities", "reference"]
+      tags:
+        - scientific realism
+        - theoretical entities
+        - reference
       strength: 0.6
-      source: "Philosophy of science"
-
-  # Building on human rights + naturalism
+      source: Philosophy of science
+      attribution:
+        - empiricism
+        - materialism
+      controversy: 0.5
+    dependencies:
+      - natural_kinds_exist
+      - universal_rationality_possible
+    activation_conditions:
+      required_arguments:
+        - natural_kinds_exist
+        - universal_rationality_possible
   - id: secular_humanism_viable
-    title: "Secular humanism is a viable worldview"
-    description: "If universal human rights exist and naturalism is well-supported, then a non-religious humanistic worldview can provide adequate moral and meaning frameworks."
-    conclusion: "Religious belief is not necessary for moral living and human flourishing"
+    title: Secular humanism is a viable worldview
+    description: If universal human rights exist and naturalism is well-supported,
+      then a non-religious humanistic worldview can provide adequate moral and
+      meaning frameworks.
+    conclusion: Religious belief is not necessary for moral living and human flourishing
     category: ethics
     level: 3
     metadata:
-      tags: ["secular humanism", "non-religious ethics", "meaning"]
+      tags:
+        - secular humanism
+        - non-religious ethics
+        - meaning
       strength: 0.6
-      source: "Humanist philosophy"
-
-  # Building on constitutional democracy + technology ethics
+      source: Humanist philosophy
+      attribution:
+        - utilitarianism
+        - empiricism
+        - voltaire
+      controversy: 0.6
+    dependencies:
+      - ethical_obligations_exist
+      - naturalism_well_supported
+    activation_conditions:
+      required_arguments:
+        - ethical_obligations_exist
+        - naturalism_well_supported
   - id: democratic_governance_of_technology
-    title: "Technology should be democratically governed"
-    description: "If constitutional democracy is optimal and technology must serve humanity, then democratic institutions should guide technological development and regulation."
-    conclusion: "Citizens should have democratic input into technological choices affecting society"
+    title: Technology should be democratically governed
+    description: If constitutional democracy is optimal and technology must serve
+      humanity, then democratic institutions should guide technological
+      development and regulation.
+    conclusion: Citizens should have democratic input into technological choices
+      affecting society
     category: political
     level: 3
     metadata:
-      tags: ["democratic governance", "technology policy", "citizen participation"]
+      tags:
+        - democratic governance
+        - technology policy
+        - citizen participation
       strength: 0.7
-      source: "Democratic theory"
-
-  # Building on virtue ethics + interdisciplinary inquiry
+      source: Democratic theory
+      attribution:
+        - social_contract
+        - dimon
+      controversy: 0.4
+    dependencies:
+      - constitutional_democracy_optimal
+      - technology_must_serve_humanity
+    activation_conditions:
+      required_arguments:
+        - constitutional_democracy_optimal
+        - technology_must_serve_humanity
   - id: practical_wisdom_cultivation
-    title: "Practical wisdom should be cultivated"
-    description: "If virtue ethics provides moral guidance and interdisciplinary inquiry enhances understanding, then developing practical wisdom through broad learning is essential for good living."
-    conclusion: "Education should aim at developing practical wisdom, not just technical skills"
+    title: Practical wisdom should be cultivated
+    description: If virtue ethics provides moral guidance and interdisciplinary
+      inquiry enhances understanding, then developing practical wisdom through
+      broad learning is essential for good living.
+    conclusion: Education should aim at developing practical wisdom, not just
+      technical skills
     category: ethics
     level: 3
+    dependencies: ["virtue_ethics_valid", "interdisciplinary_inquiry_valuable"]
+    activation_conditions:
+      required_arguments: ["virtue_ethics_valid", "interdisciplinary_inquiry_valuable"]
     metadata:
-      tags: ["practical wisdom", "education", "integrated learning"]
+      tags:
+        - practical wisdom
+        - education
+        - integrated learning
       strength: 0.7
-      source: "Aristotelian practical philosophy"
+      source: Aristotelian practical philosophy
+      attribution: ["virtue_ethics", "aristotle"]
+      controversy: 0.3
+
+  # Additional level 3 arguments to support level 4
+  - id: artificial_consciousness_possible
+    title: "Artificial consciousness is theoretically possible"
+    description: "If naturalism is well-supported and prediction/control are possible, then consciousness could theoretically be replicated in artificial systems."
+    conclusion: "Machines could potentially be conscious"
+    category: consciousness
+    level: 3
+    dependencies: ["naturalism_well_supported", "prediction_and_control_possible"]
+    activation_conditions:
+      required_arguments: ["naturalism_well_supported", "prediction_and_control_possible"]
+    metadata:
+      tags: ["artificial consciousness", "AI", "philosophy of mind"]
+      strength: 0.5
+      source: "Computational philosophy of mind"
+      attribution: ["materialism", "simons"]
+      controversy: 0.8
+
+  - id: technological_intervention_permissible
+    title: "Technological intervention in human nature is ethically permissible"
+    description: "If technology must serve humanity and moral progress is possible, then using technology to improve human capabilities can be ethically justified."
+    conclusion: "Human enhancement through technology can be moral"
+    category: ethics
+    level: 3
+    dependencies: ["technology_must_serve_humanity", "moral_progress_possible"]
+    activation_conditions:
+      required_arguments: ["technology_must_serve_humanity", "moral_progress_possible"]
+    metadata:
+      tags: ["human enhancement", "bioethics", "technological ethics"]
+      strength: 0.6
+      source: "Bioethics"
+      attribution: ["utilitarianism", "mill"]
+      controversy: 0.7
+
+  - id: liberal_democracy_optimal
+    title: "Liberal democracy is the optimal political system"
+    description: "If constitutional democracy is optimal and human rights are universal, then liberal democratic systems best protect individual rights while enabling collective governance."
+    conclusion: "Liberal democracy optimally balances individual freedom with collective coordination"
+    category: political
+    level: 3
+    dependencies: ["constitutional_democracy_optimal", "human_rights_universal"]
+    activation_conditions:
+      required_arguments: ["constitutional_democracy_optimal", "human_rights_universal"]
+    metadata:
+      tags: ["liberal democracy", "individual rights", "political systems"]
+      strength: 0.7
+      source: "Liberal political theory"
+      attribution: ["social_contract", "locke", "rawls"]
+      controversy: 0.4
+
+  - id: technological_progress_beneficial
+    title: "Technological progress is generally beneficial"
+    description: "If prediction and control are possible and moral progress is achievable, then technological advancement generally improves human welfare when properly guided."
+    conclusion: "Technology, when ethically guided, improves human conditions"
+    category: epistemology
+    level: 3
+    dependencies: ["prediction_and_control_possible", "moral_progress_possible"]
+    activation_conditions:
+      required_arguments: ["prediction_and_control_possible", "moral_progress_possible"]
+    metadata:
+      tags: ["technological progress", "human welfare", "innovation"]
+      strength: 0.7
+      source: "Philosophy of technology"
+      attribution: ["empiricism", "utilitarianism", "simons"]
+      controversy: 0.3
+
+  - id: effective_institutions_achievable
+    title: "Effective institutions are achievable"
+    description: "If legitimate government is possible and philosophical inquiry is valuable, then human societies can design and implement effective institutions through reasoned analysis."
+    conclusion: "Good institutional design is possible through rational inquiry"
+    category: political
+    level: 3
+    dependencies: ["legitimate_government_possible", "philosophical_inquiry_valuable"]
+    activation_conditions:
+      required_arguments: ["legitimate_government_possible", "philosophical_inquiry_valuable"]
+    metadata:
+      tags: ["institutional design", "governance", "rational planning"]
+      strength: 0.7
+      source: "Institutional economics"
+      attribution: ["social_contract", "dimon", "rawls"]
+      controversy: 0.3
+
+  - id: objective_moral_knowledge_possible
+    title: "Objective moral knowledge is possible"
+    description: "If objective values exist and universal rationality is possible, then humans can gain genuine knowledge about moral truths through rational inquiry."
+    conclusion: "Moral truths can be discovered through reason"
+    category: ethics
+    level: 3
+    dependencies: ["objective_values_exist", "universal_rationality_possible"]
+    activation_conditions:
+      required_arguments: ["objective_values_exist", "universal_rationality_possible"]
+    metadata:
+      tags: ["moral epistemology", "moral knowledge", "rational ethics"]
+      strength: 0.6
+      source: "Moral epistemology"
+      attribution: ["virtue_ethics", "natural_law", "kant"]
+      controversy: 0.5
+
+  - id: mind_body_problem_solvable
+    title: "The mind-body problem is solvable"
+    description: "If naturalism is well-supported and scientific method is valid, then the relationship between consciousness and physical processes can eventually be scientifically understood."
+    conclusion: "Science can eventually explain consciousness"
+    category: consciousness
+    level: 3
+    dependencies: ["naturalism_well_supported", "scientific_method_valid"]
+    activation_conditions:
+      required_arguments: ["naturalism_well_supported", "scientific_method_valid"]
+    metadata:
+      tags: ["mind-body problem", "consciousness", "neuroscience"]
+      strength: 0.6
+      source: "Philosophy of mind"
+      attribution: ["materialism", "empiricism"]
+      controversy: 0.8
+
+  - id: global_cooperation_achievable
+    title: "Global cooperation is achievable"
+    description: "If effective institutions are achievable and enlightenment project is valid, then international cooperation on global challenges is possible through rational institution building."
+    conclusion: "Humanity can cooperate effectively on global challenges"
+    category: political
+    level: 3
+    dependencies: ["effective_institutions_achievable", "enlightenment_project_valid"]
+    activation_conditions:
+      required_arguments: ["effective_institutions_achievable", "enlightenment_project_valid"]
+    metadata:
+      tags: ["global cooperation", "international institutions", "collective action"]
+      strength: 0.6
+      source: "International relations theory"
+      attribution: ["social_contract", "utilitarianism", "dimon"]
+      controversy: 0.5

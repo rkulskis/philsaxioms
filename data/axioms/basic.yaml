@@ -9,6 +9,8 @@ axioms:
       tags: ["existence", "being", "reality"]
       difficulty: basic
       source: "Descartes, universal intuition"
+      attribution: ["descartes", "empiricism"]
+      acceptability: 0.95
 
   - id: logic_works
     title: "Basic logic is reliable"
@@ -18,6 +20,8 @@ axioms:
       tags: ["logic", "contradiction", "consistency"]
       difficulty: basic
       source: "Law of non-contradiction"
+      attribution: ["aristotle", "rationalism"]
+      acceptability: 0.90
 
   - id: patterns_exist
     title: "Patterns and regularities exist"
@@ -27,6 +31,8 @@ axioms:
       tags: ["patterns", "regularity", "causation"]
       difficulty: basic
       source: "Empirical observation"
+      attribution: ["empiricism", "simons"]
+      acceptability: 0.85
 
   - id: differences_matter
     title: "Some differences matter more than others"
@@ -36,6 +42,8 @@ axioms:
       tags: ["value", "significance", "difference"]
       difficulty: basic
       source: "Practical experience"
+      attribution: ["virtue_ethics", "aristotle"]
+      acceptability: 0.80
 
   - id: minds_can_reason
     title: "Reasoning can discover truth"
@@ -45,6 +53,8 @@ axioms:
       tags: ["reason", "truth", "thinking"]
       difficulty: basic
       source: "Rational experience"
+      attribution: ["rationalism", "kant", "simons"]
+      acceptability: 0.88
 
   - id: actions_have_consequences
     title: "Actions have consequences"
@@ -54,6 +64,8 @@ axioms:
       tags: ["causation", "responsibility", "consequences"]
       difficulty: basic
       source: "Universal experience"
+      attribution: ["empiricism", "utilitarianism"]
+      acceptability: 0.95
 
   - id: suffering_exists
     title: "Suffering exists"
@@ -63,6 +75,8 @@ axioms:
       tags: ["suffering", "pain", "experience"]
       difficulty: basic
       source: "Direct experience"
+      attribution: ["utilitarianism", "mill", "jesus"]
+      acceptability: 0.98
 
   - id: communication_possible
     title: "Communication between minds is possible"
@@ -72,6 +86,8 @@ axioms:
       tags: ["communication", "language", "understanding"]
       difficulty: basic
       source: "Linguistic experience"
+      attribution: ["empiricism", "social_contract"]
+      acceptability: 0.92
 
   - id: choice_exists
     title: "Choices can be made"
@@ -81,6 +97,8 @@ axioms:
       tags: ["choice", "freedom", "options"]
       difficulty: basic
       source: "Decision experience"
+      attribution: ["existentialism", "trump"]
+      acceptability: 0.75
 
   - id: cooperation_possible
     title: "Cooperation is possible"
@@ -90,3 +108,5 @@ axioms:
       tags: ["cooperation", "collaboration", "mutual benefit"]
       difficulty: basic
       source: "Social experience"
+      attribution: ["social_contract", "dimon", "rousseau"]
+      acceptability: 0.85

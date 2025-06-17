@@ -17,7 +17,9 @@ export interface Axiom {
   metadata?: {
     difficulty?: 'basic' | 'intermediate' | 'advanced';
     source?: string;
+    attribution?: string[];
     tags?: string[];
+    acceptability?: number; // 0-1, how widely accepted this axiom is
   };
 }
 
@@ -32,11 +34,20 @@ export interface Argument {
     x: number;
     y: number;
   };
+  dependencies?: string[]; // axiom or argument IDs this depends on
+  activation_conditions?: {
+    required_axioms?: string[];
+    forbidden_axioms?: string[];
+    required_arguments?: string[];
+    forbidden_arguments?: string[];
+  };
   metadata?: {
     difficulty?: 'basic' | 'intermediate' | 'advanced';
     source?: string;
+    attribution?: string[];
     tags?: string[];
     strength?: number; // 0-1, how convincing the argument is
+    controversy?: number; // 0-1, how disputed this argument is
   };
 }
 
@@ -85,11 +96,32 @@ export interface Snapshot {
   createdAt: Date;
 }
 
+export interface Source {
+  id: string;
+  name: string;
+  period?: string;
+  tradition?: string;
+  key_works?: string[];
+  perspective?: string;
+  description?: string;
+  key_figures?: string[];
+}
+
+export interface ValidationResult {
+  isValid: boolean;
+  errors: string[];
+  warnings: string[];
+  orphanedArguments: string[];
+  circularDependencies: string[];
+}
+
 export interface GraphData {
   axioms: Axiom[];
   arguments: Argument[];
   edges: Edge[];
   categories: AxiomCategory[];
+  sources?: Source[];
+  validation?: ValidationResult;
 }
 
 export interface QuestionnaireItem {
