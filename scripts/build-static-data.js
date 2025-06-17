@@ -1,0 +1,75 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const path = require('path');
+const YAML = require('yaml');
+const glob = require('glob');
+
+const dataDir = path.resolve(__dirname, '../data');
+const outputDir = path.resolve(__dirname, '../packages/frontend/public');
+
+console.log('Converting YAML data to static JSON files...');
+
+// Ensure output directory exists
+if (!fs.existsSync(outputDir)) {
+  fs.mkdirSync(outputDir, { recursive: true });
+}
+
+function loadYamlFile(filePath) {
+  try {
+    const content = fs.readFileSync(filePath, 'utf8');
+    return YAML.parse(content);
+  } catch (error) {
+    console.error(`Error loading ${filePath}:`, error);
+    return null;
+  }
+}
+
+function loadYamlFiles(pattern, arrayKey) {
+  const files = glob.sync(pattern, { cwd: dataDir });
+  const items = [];
+  
+  for (const file of files) {
+    const filePath = path.join(dataDir, file);
+    const data = loadYamlFile(filePath);
+    if (data && data[arrayKey]) {
+      items.push(...data[arrayKey]);
+    }
+  }
+  
+  return items;
+}
+
+// Load all data
+const categories = loadYamlFile(path.join(dataDir, 'categories.yaml'))?.categories || [];
+const axioms = loadYamlFiles('axioms/*.yaml', 'axioms');
+const arguments = loadYamlFiles('arguments/*.yaml', 'arguments');
+const edges = loadYamlFiles('edges/*.yaml', 'edges');
+const questionnaire = loadYamlFile(path.join(dataDir, 'questionnaire.yaml'))?.questionnaire || [];
+
+// Create combined data file
+const graphData = {
+  categories,
+  axioms,
+  arguments,
+  edges
+};
+
+// Write JSON files
+fs.writeFileSync(
+  path.join(outputDir, 'graph-data.json'),
+  JSON.stringify(graphData, null, 2)
+);
+
+fs.writeFileSync(
+  path.join(outputDir, 'questionnaire.json'),
+  JSON.stringify(questionnaire, null, 2)
+);
+
+console.log(`Generated static data files:`);
+console.log(`- ${axioms.length} axioms`);
+console.log(`- ${arguments.length} arguments`);
+console.log(`- ${edges.length} edges`);
+console.log(`- ${categories.length} categories`);
+console.log(`- ${questionnaire.length} questionnaire items`);
+console.log('Static data generation complete!');

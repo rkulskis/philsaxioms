@@ -1,0 +1,122 @@
+arguments:
+  # LEVEL 3: Advanced arguments building on Level 2 conclusions
+  
+  # Building on scientific method + metaphysical realism
+  - id: naturalism_well_supported
+    title: "Naturalism is well-supported"
+    description: "If science discovers objective truths and metaphysical realism is true, then the naturalistic worldview that relies on scientific methods is strongly supported."
+    conclusion: "The natural world as described by science is likely all that exists"
+    category: metaphysics
+    level: 3
+    metadata:
+      tags: ["naturalism", "scientific worldview", "metaphysics"]
+      strength: 0.7
+      source: "Scientific naturalism"
+
+  # Building on moral progress + universal rationality
+  - id: enlightenment_project_valid
+    title: "The Enlightenment project is valid"
+    description: "If moral progress is possible and universal rationality exists, then the Enlightenment goal of using reason to improve human conditions is a valid and achievable project."
+    conclusion: "Reason can guide humanity toward better societies and institutions"
+    category: political
+    level: 3
+    metadata:
+      tags: ["enlightenment", "reason", "progress"]
+      strength: 0.7
+      source: "Enlightenment philosophy"
+
+  # Building on prediction/control + human rights
+  - id: technology_must_serve_humanity
+    title: "Technology must serve human dignity"
+    description: "If prediction and control of nature is possible and universal human rights exist, then technological development should be guided by respect for human dignity and rights."
+    conclusion: "Technological progress must be ethically constrained"
+    category: ethics
+    level: 3
+    metadata:
+      tags: ["technology ethics", "human dignity", "responsible innovation"]
+      strength: 0.8
+      source: "Technology ethics"
+
+  # Building on legitimate government + rule of law
+  - id: constitutional_democracy_optimal
+    title: "Constitutional democracy is optimal"
+    description: "If legitimate government is possible and rule of law is essential, then constitutional democracies that limit power through law provide the best form of government."
+    conclusion: "Constitutional democratic systems best protect liberty and enable flourishing"
+    category: political
+    level: 3
+    metadata:
+      tags: ["constitutional democracy", "separation of powers", "optimal government"]
+      strength: 0.7
+      source: "Democratic constitutionalism"
+
+  # Building on ethical obligations + objective values
+  - id: virtue_ethics_valid
+    title: "Virtue ethics provides moral guidance"
+    description: "If we have ethical obligations to others and objective values exist, then cultivating virtuous character traits that align with objective values is morally important."
+    conclusion: "Character development and virtue cultivation are central to ethics"
+    category: ethics
+    level: 3
+    metadata:
+      tags: ["virtue ethics", "character", "moral development"]
+      strength: 0.6
+      source: "Aristotelian virtue ethics"
+
+  # Building on philosophical inquiry + scientific method
+  - id: interdisciplinary_inquiry_valuable
+    title: "Interdisciplinary inquiry enhances understanding"
+    description: "If philosophical inquiry has value and science discovers truths, then combining philosophical reflection with scientific investigation yields deeper understanding."
+    conclusion: "Philosophy and science should collaborate to address fundamental questions"
+    category: epistemology
+    level: 3
+    metadata:
+      tags: ["interdisciplinary", "philosophy of science", "collaboration"]
+      strength: 0.8
+      source: "Philosophy of science"
+
+  # Building on natural kinds + universal rationality
+  - id: scientific_realism_about_theories
+    title: "Scientific theories refer to real entities"
+    description: "If natural kinds exist and universal rationality is possible, then successful scientific theories genuinely refer to real structures and entities in nature."
+    conclusion: "Theoretical entities postulated by science likely exist"
+    category: epistemology
+    level: 3
+    metadata:
+      tags: ["scientific realism", "theoretical entities", "reference"]
+      strength: 0.6
+      source: "Philosophy of science"
+
+  # Building on human rights + naturalism
+  - id: secular_humanism_viable
+    title: "Secular humanism is a viable worldview"
+    description: "If universal human rights exist and naturalism is well-supported, then a non-religious humanistic worldview can provide adequate moral and meaning frameworks."
+    conclusion: "Religious belief is not necessary for moral living and human flourishing"
+    category: ethics
+    level: 3
+    metadata:
+      tags: ["secular humanism", "non-religious ethics", "meaning"]
+      strength: 0.6
+      source: "Humanist philosophy"
+
+  # Building on constitutional democracy + technology ethics
+  - id: democratic_governance_of_technology
+    title: "Technology should be democratically governed"
+    description: "If constitutional democracy is optimal and technology must serve humanity, then democratic institutions should guide technological development and regulation."
+    conclusion: "Citizens should have democratic input into technological choices affecting society"
+    category: political
+    level: 3
+    metadata:
+      tags: ["democratic governance", "technology policy", "citizen participation"]
+      strength: 0.7
+      source: "Democratic theory"
+
+  # Building on virtue ethics + interdisciplinary inquiry
+  - id: practical_wisdom_cultivation
+    title: "Practical wisdom should be cultivated"
+    description: "If virtue ethics provides moral guidance and interdisciplinary inquiry enhances understanding, then developing practical wisdom through broad learning is essential for good living."
+    conclusion: "Education should aim at developing practical wisdom, not just technical skills"
+    category: ethics
+    level: 3
+    metadata:
+      tags: ["practical wisdom", "education", "integrated learning"]
+      strength: 0.7
+      source: "Aristotelian practical philosophy"

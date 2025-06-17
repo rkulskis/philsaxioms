@@ -1,0 +1,88 @@
+edges:
+  - id: reality_enables_knowledge
+    fromAxiom: reality_exists
+    toAxiom: knowledge_possible
+    relation:
+      type: supports
+      strength: 0.8
+      bidirectional: false
+    explanation: "If reality exists independently, then it provides a stable foundation for gaining knowledge through observation and reasoning"
+    metadata:
+      difficulty: basic
+  
+  - id: knowledge_enables_ethics
+    fromAxiom: knowledge_possible
+    toAxiom: suffering_bad
+    relation:
+      type: supports
+      strength: 0.6
+      bidirectional: false
+    explanation: "If we can gain knowledge, we can understand the nature of suffering and make moral judgments about it"
+    metadata:
+      difficulty: basic
+  
+  - id: consciousness_requires_reality
+    fromAxiom: consciousness_real
+    toAxiom: reality_exists
+    relation:
+      type: requires
+      strength: 0.9
+      bidirectional: false
+    explanation: "For consciousness to be real, there must be something (reality) in which it exists"
+    metadata:
+      difficulty: intermediate
+  
+  - id: free_will_vs_physicalism
+    fromAxiom: free_will_exists
+    toAxiom: physicalism
+    relation:
+      type: contradicts
+      strength: 0.7
+      bidirectional: true
+    explanation: "If everything is physical and follows physical laws, genuine free will seems impossible"
+    metadata:
+      difficulty: advanced
+  
+  - id: logic_enables_knowledge
+    fromAxiom: logical_consistency
+    toAxiom: knowledge_possible
+    relation:
+      type: requires
+      strength: 0.9
+      bidirectional: false
+    explanation: "Valid knowledge requires logical consistency in our reasoning processes"
+    metadata:
+      difficulty: basic
+  
+  - id: induction_enables_knowledge
+    fromAxiom: induction_valid
+    toAxiom: knowledge_possible
+    relation:
+      type: supports
+      strength: 0.8
+      bidirectional: false
+    explanation: "Much of our knowledge depends on inductive reasoning from experience"
+    metadata:
+      difficulty: intermediate
+  
+  - id: moral_realism_supports_suffering
+    fromAxiom: moral_realism
+    toAxiom: suffering_bad
+    relation:
+      type: supports
+      strength: 0.7
+      bidirectional: false
+    explanation: "If moral facts are objective, then facts about suffering being bad could be objectively true"
+    metadata:
+      difficulty: advanced
+  
+  - id: social_contract_supports_rights
+    fromAxiom: social_contract
+    toAxiom: individual_rights
+    relation:
+      type: supports
+      strength: 0.6
+      bidirectional: false
+    explanation: "Social contract theory can provide a foundation for individual rights through mutual agreement"
+    metadata:
+      difficulty: advanced

@@ -1,0 +1,30 @@
+categories:
+  - id: metaphysics
+    name: Metaphysics
+    color: "#8B5CF6"
+    description: "Fundamental questions about reality, existence, and being"
+  
+  - id: epistemology
+    name: Epistemology
+    color: "#06B6D4"
+    description: "Nature of knowledge, belief, and justified truth"
+  
+  - id: ethics
+    name: Ethics
+    color: "#EF4444"
+    description: "Moral principles, values, and right vs wrong"
+  
+  - id: logic
+    name: Logic
+    color: "#10B981"
+    description: "Principles of valid reasoning and inference"
+  
+  - id: political
+    name: Political Philosophy
+    color: "#F59E0B"
+    description: "Government, justice, rights, and social organization"
+  
+  - id: consciousness
+    name: Philosophy of Mind
+    color: "#EC4899"
+    description: "Nature of consciousness, mind, and mental states"

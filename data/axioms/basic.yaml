@@ -1,0 +1,92 @@
+axioms:
+  # The 10 Fundamental Axioms - Simple enough for any skeptic to evaluate
+  
+  - id: something_exists
+    title: "Something exists"
+    description: "At minimum, my thoughts, experiences, or some form of existence is occurring right now."
+    category: metaphysics
+    metadata:
+      tags: ["existence", "being", "reality"]
+      difficulty: basic
+      source: "Descartes, universal intuition"
+
+  - id: logic_works
+    title: "Basic logic is reliable"
+    description: "Contradictions indicate error. If something is true, its opposite cannot also be true in the same way."
+    category: logic
+    metadata:
+      tags: ["logic", "contradiction", "consistency"]
+      difficulty: basic
+      source: "Law of non-contradiction"
+
+  - id: patterns_exist
+    title: "Patterns and regularities exist"
+    description: "Some things happen more predictably than others. There are observable regularities in experience."
+    category: epistemology
+    metadata:
+      tags: ["patterns", "regularity", "causation"]
+      difficulty: basic
+      source: "Empirical observation"
+
+  - id: differences_matter
+    title: "Some differences matter more than others"
+    description: "Not all states, outcomes, or experiences are equivalent. Some distinctions have significance."
+    category: ethics
+    metadata:
+      tags: ["value", "significance", "difference"]
+      difficulty: basic
+      source: "Practical experience"
+
+  - id: minds_can_reason
+    title: "Reasoning can discover truth"
+    description: "Careful thinking and analysis can sometimes lead to more accurate conclusions than random guessing."
+    category: epistemology
+    metadata:
+      tags: ["reason", "truth", "thinking"]
+      difficulty: basic
+      source: "Rational experience"
+
+  - id: actions_have_consequences
+    title: "Actions have consequences"
+    description: "What we do affects what happens next. Choices and behaviors lead to different outcomes."
+    category: ethics
+    metadata:
+      tags: ["causation", "responsibility", "consequences"]
+      difficulty: basic
+      source: "Universal experience"
+
+  - id: suffering_exists
+    title: "Suffering exists"
+    description: "Pain, distress, and unwanted experiences are real phenomena that occur."
+    category: ethics
+    metadata:
+      tags: ["suffering", "pain", "experience"]
+      difficulty: basic
+      source: "Direct experience"
+
+  - id: communication_possible
+    title: "Communication between minds is possible"
+    description: "Ideas, meanings, and information can be shared between different thinking beings."
+    category: epistemology
+    metadata:
+      tags: ["communication", "language", "understanding"]
+      difficulty: basic
+      source: "Linguistic experience"
+
+  - id: choice_exists
+    title: "Choices can be made"
+    description: "There are situations where different options are available and selection between them is possible."
+    category: consciousness
+    metadata:
+      tags: ["choice", "freedom", "options"]
+      difficulty: basic
+      source: "Decision experience"
+
+  - id: cooperation_possible
+    title: "Cooperation is possible"
+    description: "Different agents can work together toward shared goals and mutual benefit."
+    category: political
+    metadata:
+      tags: ["cooperation", "collaboration", "mutual benefit"]
+      difficulty: basic
+      source: "Social experience"

@@ -1,0 +1,584 @@
+edges:
+  # AXIOMS TO LEVEL 1 ARGUMENTS
+  
+  # something_exists + logic_works → objective_reality_exists
+  - id: existence_logic_to_objective_reality
+    fromNode: something_exists
+    toNode: objective_reality_exists
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "If something exists, logic suggests there's an objective reality"
+
+  - id: logic_to_objective_reality
+    fromNode: logic_works
+    toNode: objective_reality_exists
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Logic provides the reasoning framework for objective reality"
+
+  # patterns_exist + minds_can_reason → knowledge_is_possible
+  - id: patterns_to_knowledge
+    fromNode: patterns_exist
+    toNode: knowledge_is_possible
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.9
+    explanation: "Patterns provide the basis for reliable knowledge"
+
+  - id: reasoning_to_knowledge
+    fromNode: minds_can_reason
+    toNode: knowledge_is_possible
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.9
+    explanation: "Reasoning ability enables knowledge acquisition"
+
+  # differences_matter + suffering_exists → moral_facts_exist
+  - id: differences_to_moral_facts
+    fromNode: differences_matter
+    toNode: moral_facts_exist
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "If differences matter, moral distinctions are real"
+
+  - id: suffering_to_moral_facts
+    fromNode: suffering_exists
+    toNode: moral_facts_exist
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Suffering creates objective moral facts about what matters"
+
+  # actions_have_consequences + choice_exists → moral_responsibility_exists
+  - id: consequences_to_responsibility
+    fromNode: actions_have_consequences
+    toNode: moral_responsibility_exists
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.9
+    explanation: "Consequences make responsibility possible"
+
+  - id: choice_to_responsibility
+    fromNode: choice_exists
+    toNode: moral_responsibility_exists
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.9
+    explanation: "Choice is necessary for moral responsibility"
+
+  # communication_possible + minds_can_reason → rational_discourse_possible
+  - id: communication_to_discourse
+    fromNode: communication_possible
+    toNode: rational_discourse_possible
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.9
+    explanation: "Communication enables rational discourse"
+
+  - id: reasoning_to_discourse
+    fromNode: minds_can_reason
+    toNode: rational_discourse_possible
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Reasoning ability makes discourse rational"
+
+  # cooperation_possible + actions_have_consequences → social_contracts_possible
+  - id: cooperation_to_contracts
+    fromNode: cooperation_possible
+    toNode: social_contracts_possible
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.9
+    explanation: "Cooperation enables social agreements"
+
+  - id: consequences_to_contracts
+    fromNode: actions_have_consequences
+    toNode: social_contracts_possible
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Consequences make agreements meaningful"
+
+  # patterns_exist + actions_have_consequences → causal_laws_exist
+  - id: patterns_to_causal_laws
+    fromNode: patterns_exist
+    toNode: causal_laws_exist
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.9
+    explanation: "Patterns suggest underlying causal laws"
+
+  - id: consequences_to_causal_laws
+    fromNode: actions_have_consequences
+    toNode: causal_laws_exist
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Consequences demonstrate causal relationships"
+
+  # something_exists + patterns_exist → stable_reality_exists
+  - id: existence_to_stable_reality
+    fromNode: something_exists
+    toNode: stable_reality_exists
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Existence implies some stable structure"
+
+  - id: patterns_to_stable_reality
+    fromNode: patterns_exist
+    toNode: stable_reality_exists
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.9
+    explanation: "Patterns require stable underlying reality"
+
+  # choice_exists + differences_matter → values_guide_choices
+  - id: choice_to_values
+    fromNode: choice_exists
+    toNode: values_guide_choices
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Choice enables value-based decision making"
+
+  - id: differences_to_values
+    fromNode: differences_matter
+    toNode: values_guide_choices
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Meaningful differences create values"
+
+  # suffering_exists + actions_have_consequences → harm_prevention_matters
+  - id: suffering_to_harm_prevention
+    fromNode: suffering_exists
+    toNode: harm_prevention_matters
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.9
+    explanation: "Real suffering makes harm prevention important"
+
+  - id: consequences_to_harm_prevention
+    fromNode: actions_have_consequences
+    toNode: harm_prevention_matters
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Consequences mean we can prevent harm"
+
+  # logic_works + communication_possible → shared_reasoning_possible
+  - id: logic_to_shared_reasoning
+    fromNode: logic_works
+    toNode: shared_reasoning_possible
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.9
+    explanation: "Logic provides universal reasoning standards"
+
+  - id: communication_to_shared_reasoning
+    fromNode: communication_possible
+    toNode: shared_reasoning_possible
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.9
+    explanation: "Communication enables shared reasoning"
+
+  # cooperation_possible + moral_facts_exist → justice_possible
+  - id: cooperation_to_justice
+    fromNode: cooperation_possible
+    toNode: justice_possible
+    fromType: axiom
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Cooperation enables just institutions"
+
+  # LEVEL 1 TO LEVEL 2 ARGUMENT CONNECTIONS
+
+  # knowledge_is_possible + objective_reality_exists → scientific_method_valid
+  - id: knowledge_reality_to_science
+    fromNode: knowledge_is_possible
+    toNode: scientific_method_valid
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.9
+    explanation: "Knowledge and objective reality enable scientific method"
+
+  - id: objective_reality_to_science
+    fromNode: objective_reality_exists
+    toNode: scientific_method_valid
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Objective reality is what science studies"
+
+  # moral_facts_exist + rational_discourse_possible → moral_progress_possible
+  - id: moral_facts_to_progress
+    fromNode: moral_facts_exist
+    toNode: moral_progress_possible
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Moral facts enable genuine moral progress"
+
+  - id: discourse_to_moral_progress
+    fromNode: rational_discourse_possible
+    toNode: moral_progress_possible
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Rational discourse enables moral progress"
+
+  # causal_laws_exist + knowledge_is_possible → prediction_and_control_possible
+  - id: causal_laws_to_prediction
+    fromNode: causal_laws_exist
+    toNode: prediction_and_control_possible
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.9
+    explanation: "Causal laws enable prediction and control"
+
+  - id: knowledge_to_prediction
+    fromNode: knowledge_is_possible
+    toNode: prediction_and_control_possible
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Knowledge enables prediction and control"
+
+  # justice_possible + social_contracts_possible → legitimate_government_possible
+  - id: justice_to_government
+    fromNode: justice_possible
+    toNode: legitimate_government_possible
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Justice enables legitimate government"
+
+  - id: contracts_to_government
+    fromNode: social_contracts_possible
+    toNode: legitimate_government_possible
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Social contracts create legitimate authority"
+
+  # moral_responsibility_exists + harm_prevention_matters → ethical_obligations_exist
+  - id: responsibility_to_obligations
+    fromNode: moral_responsibility_exists
+    toNode: ethical_obligations_exist
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Responsibility creates ethical obligations"
+
+  - id: harm_prevention_to_obligations
+    fromNode: harm_prevention_matters
+    toNode: ethical_obligations_exist
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Harm prevention is an ethical obligation"
+
+  # objective_reality_exists + stable_reality_exists → metaphysical_realism_true
+  - id: objective_stable_to_realism
+    fromNode: objective_reality_exists
+    toNode: metaphysical_realism_true
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.9
+    explanation: "Objective stable reality supports metaphysical realism"
+
+  - id: stable_to_realism
+    fromNode: stable_reality_exists
+    toNode: metaphysical_realism_true
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Stable reality supports realism"
+
+  # values_guide_choices + moral_facts_exist → objective_values_exist
+  - id: values_choices_to_objective_values
+    fromNode: values_guide_choices
+    toNode: objective_values_exist
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.7
+    explanation: "Value-guided choices suggest objective values"
+
+  - id: moral_facts_to_objective_values
+    fromNode: moral_facts_exist
+    toNode: objective_values_exist
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Moral facts imply objective values"
+
+  # shared_reasoning_possible + knowledge_is_possible → universal_rationality_possible
+  - id: shared_reasoning_to_universal
+    fromNode: shared_reasoning_possible
+    toNode: universal_rationality_possible
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Shared reasoning enables universal rationality"
+
+  - id: knowledge_to_universal_rationality
+    fromNode: knowledge_is_possible
+    toNode: universal_rationality_possible
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.7
+    explanation: "Knowledge supports universal rational standards"
+
+  # rational_discourse_possible + moral_progress_possible → philosophical_inquiry_valuable
+  - id: discourse_to_philosophy
+    fromNode: rational_discourse_possible
+    toNode: philosophical_inquiry_valuable
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Rational discourse makes philosophy valuable"
+
+  - id: moral_progress_to_philosophy
+    fromNode: moral_progress_possible
+    toNode: philosophical_inquiry_valuable
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.7
+    explanation: "Moral progress validates philosophical inquiry"
+
+  # stable_reality_exists + causal_laws_exist → natural_kinds_exist
+  - id: stable_causal_to_natural_kinds
+    fromNode: stable_reality_exists
+    toNode: natural_kinds_exist
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.7
+    explanation: "Stable reality with causal laws suggests natural kinds"
+
+  - id: causal_laws_to_natural_kinds
+    fromNode: causal_laws_exist
+    toNode: natural_kinds_exist
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.6
+    explanation: "Causal laws organize reality into natural kinds"
+
+  # social_contracts_possible + legitimate_government_possible → rule_of_law_essential
+  - id: contracts_to_rule_of_law
+    fromNode: social_contracts_possible
+    toNode: rule_of_law_essential
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Social contracts require rule of law"
+
+  - id: government_to_rule_of_law
+    fromNode: legitimate_government_possible
+    toNode: rule_of_law_essential
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Legitimate government requires rule of law"
+
+  # ethical_obligations_exist + legitimate_government_possible → human_rights_universal
+  - id: obligations_to_rights
+    fromNode: ethical_obligations_exist
+    toNode: human_rights_universal
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Ethical obligations create universal rights"
+
+  - id: government_to_rights
+    fromNode: legitimate_government_possible
+    toNode: human_rights_universal
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.7
+    explanation: "Legitimate government must protect rights"
+
+  # LEVEL 2 TO LEVEL 3 ARGUMENT CONNECTIONS
+
+  # scientific_method_valid + metaphysical_realism_true → naturalism_well_supported
+  - id: science_realism_to_naturalism
+    fromNode: scientific_method_valid
+    toNode: naturalism_well_supported
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Valid science and realism support naturalism"
+
+  - id: realism_to_naturalism
+    fromNode: metaphysical_realism_true
+    toNode: naturalism_well_supported
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.7
+    explanation: "Metaphysical realism supports naturalistic worldview"
+
+  # moral_progress_possible + universal_rationality_possible → enlightenment_project_valid
+  - id: progress_rationality_to_enlightenment
+    fromNode: moral_progress_possible
+    toNode: enlightenment_project_valid
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Moral progress and rationality validate Enlightenment"
+
+  - id: rationality_to_enlightenment
+    fromNode: universal_rationality_possible
+    toNode: enlightenment_project_valid
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.7
+    explanation: "Universal rationality enables Enlightenment project"
+
+  # prediction_and_control_possible + human_rights_universal → technology_must_serve_humanity
+  - id: prediction_rights_to_tech_ethics
+    fromNode: prediction_and_control_possible
+    toNode: technology_must_serve_humanity
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Technological power must respect human rights"
+
+  - id: rights_to_tech_ethics
+    fromNode: human_rights_universal
+    toNode: technology_must_serve_humanity
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Human rights constrain technology"
+
+  # legitimate_government_possible + rule_of_law_essential → constitutional_democracy_optimal
+  - id: government_law_to_democracy
+    fromNode: legitimate_government_possible
+    toNode: constitutional_democracy_optimal
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.8
+    explanation: "Legitimate government with rule of law supports democracy"
+
+  - id: rule_of_law_to_democracy
+    fromNode: rule_of_law_essential
+    toNode: constitutional_democracy_optimal
+    fromType: argument
+    toType: argument
+    relation:
+      type: supports
+      strength: 0.7
+    explanation: "Rule of law is essential for constitutional democracy"

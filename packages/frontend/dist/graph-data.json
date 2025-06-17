@@ -1,0 +1,1546 @@
+{
+  "categories": [
+    {
+      "id": "metaphysics",
+      "name": "Metaphysics",
+      "color": "#8B5CF6",
+      "description": "Fundamental questions about reality, existence, and being"
+    },
+    {
+      "id": "epistemology",
+      "name": "Epistemology",
+      "color": "#06B6D4",
+      "description": "Nature of knowledge, belief, and justified truth"
+    },
+    {
+      "id": "ethics",
+      "name": "Ethics",
+      "color": "#EF4444",
+      "description": "Moral principles, values, and right vs wrong"
+    },
+    {
+      "id": "logic",
+      "name": "Logic",
+      "color": "#10B981",
+      "description": "Principles of valid reasoning and inference"
+    },
+    {
+      "id": "political",
+      "name": "Political Philosophy",
+      "color": "#F59E0B",
+      "description": "Government, justice, rights, and social organization"
+    },
+    {
+      "id": "consciousness",
+      "name": "Philosophy of Mind",
+      "color": "#EC4899",
+      "description": "Nature of consciousness, mind, and mental states"
+    }
+  ],
+  "axioms": [
+    {
+      "id": "something_exists",
+      "title": "Something exists",
+      "description": "At minimum, my thoughts, experiences, or some form of existence is occurring right now.",
+      "category": "metaphysics",
+      "metadata": {
+        "tags": [
+          "existence",
+          "being",
+          "reality"
+        ],
+        "difficulty": "basic",
+        "source": "Descartes, universal intuition"
+      }
+    },
+    {
+      "id": "logic_works",
+      "title": "Basic logic is reliable",
+      "description": "Contradictions indicate error. If something is true, its opposite cannot also be true in the same way.",
+      "category": "logic",
+      "metadata": {
+        "tags": [
+          "logic",
+          "contradiction",
+          "consistency"
+        ],
+        "difficulty": "basic",
+        "source": "Law of non-contradiction"
+      }
+    },
+    {
+      "id": "patterns_exist",
+      "title": "Patterns and regularities exist",
+      "description": "Some things happen more predictably than others. There are observable regularities in experience.",
+      "category": "epistemology",
+      "metadata": {
+        "tags": [
+          "patterns",
+          "regularity",
+          "causation"
+        ],
+        "difficulty": "basic",
+        "source": "Empirical observation"
+      }
+    },
+    {
+      "id": "differences_matter",
+      "title": "Some differences matter more than others",
+      "description": "Not all states, outcomes, or experiences are equivalent. Some distinctions have significance.",
+      "category": "ethics",
+      "metadata": {
+        "tags": [
+          "value",
+          "significance",
+          "difference"
+        ],
+        "difficulty": "basic",
+        "source": "Practical experience"
+      }
+    },
+    {
+      "id": "minds_can_reason",
+      "title": "Reasoning can discover truth",
+      "description": "Careful thinking and analysis can sometimes lead to more accurate conclusions than random guessing.",
+      "category": "epistemology",
+      "metadata": {
+        "tags": [
+          "reason",
+          "truth",
+          "thinking"
+        ],
+        "difficulty": "basic",
+        "source": "Rational experience"
+      }
+    },
+    {
+      "id": "actions_have_consequences",
+      "title": "Actions have consequences",
+      "description": "What we do affects what happens next. Choices and behaviors lead to different outcomes.",
+      "category": "ethics",
+      "metadata": {
+        "tags": [
+          "causation",
+          "responsibility",
+          "consequences"
+        ],
+        "difficulty": "basic",
+        "source": "Universal experience"
+      }
+    },
+    {
+      "id": "suffering_exists",
+      "title": "Suffering exists",
+      "description": "Pain, distress, and unwanted experiences are real phenomena that occur.",
+      "category": "ethics",
+      "metadata": {
+        "tags": [
+          "suffering",
+          "pain",
+          "experience"
+        ],
+        "difficulty": "basic",
+        "source": "Direct experience"
+      }
+    },
+    {
+      "id": "communication_possible",
+      "title": "Communication between minds is possible",
+      "description": "Ideas, meanings, and information can be shared between different thinking beings.",
+      "category": "epistemology",
+      "metadata": {
+        "tags": [
+          "communication",
+          "language",
+          "understanding"
+        ],
+        "difficulty": "basic",
+        "source": "Linguistic experience"
+      }
+    },
+    {
+      "id": "choice_exists",
+      "title": "Choices can be made",
+      "description": "There are situations where different options are available and selection between them is possible.",
+      "category": "consciousness",
+      "metadata": {
+        "tags": [
+          "choice",
+          "freedom",
+          "options"
+        ],
+        "difficulty": "basic",
+        "source": "Decision experience"
+      }
+    },
+    {
+      "id": "cooperation_possible",
+      "title": "Cooperation is possible",
+      "description": "Different agents can work together toward shared goals and mutual benefit.",
+      "category": "political",
+      "metadata": {
+        "tags": [
+          "cooperation",
+          "collaboration",
+          "mutual benefit"
+        ],
+        "difficulty": "basic",
+        "source": "Social experience"
+      }
+    }
+  ],
+  "arguments": [
+    {
+      "id": "objective_reality_exists",
+      "title": "Objective reality exists",
+      "description": "If something exists and logic works, then there must be an objective reality that exists independently of any particular mind's beliefs about it.",
+      "conclusion": "Reality is objective and mind-independent",
+      "category": "metaphysics",
+      "level": 1,
+      "metadata": {
+        "tags": [
+          "objectivity",
+          "reality",
+          "independence"
+        ],
+        "strength": 0.8,
+        "source": "Realist philosophy"
+      }
+    },
+    {
+      "id": "knowledge_is_possible",
+      "title": "Knowledge is possible",
+      "description": "If patterns exist and reasoning can discover truth, then it's possible to gain genuine knowledge about reality through observation and thinking.",
+      "conclusion": "Humans can acquire reliable knowledge about the world",
+      "category": "epistemology",
+      "level": 1,
+      "metadata": {
+        "tags": [
+          "knowledge",
+          "epistemology",
+          "truth"
+        ],
+        "strength": 0.9,
+        "source": "Empirical rationalism"
+      }
+    },
+    {
+      "id": "moral_facts_exist",
+      "title": "Moral facts exist",
+      "description": "If differences matter and suffering exists, then it matters whether suffering occurs or not, creating objective moral facts.",
+      "conclusion": "Some actions are objectively better or worse than others",
+      "category": "ethics",
+      "level": 1,
+      "metadata": {
+        "tags": [
+          "moral realism",
+          "objectivity",
+          "ethics"
+        ],
+        "strength": 0.7,
+        "source": "Moral realism"
+      }
+    },
+    {
+      "id": "moral_responsibility_exists",
+      "title": "Moral responsibility exists",
+      "description": "If actions have consequences and choices can be made, then agents can be held responsible for the outcomes of their freely chosen actions.",
+      "conclusion": "People are morally responsible for their choices",
+      "category": "ethics",
+      "level": 1,
+      "metadata": {
+        "tags": [
+          "responsibility",
+          "freedom",
+          "accountability"
+        ],
+        "strength": 0.8,
+        "source": "Libertarian ethics"
+      }
+    },
+    {
+      "id": "rational_discourse_possible",
+      "title": "Rational discourse is possible",
+      "description": "If communication between minds is possible and reasoning can discover truth, then people can share ideas and potentially reach agreement through rational discussion.",
+      "conclusion": "Meaningful dialogue and persuasion are possible",
+      "category": "epistemology",
+      "level": 1,
+      "metadata": {
+        "tags": [
+          "discourse",
+          "rationality",
+          "communication"
+        ],
+        "strength": 0.8,
+        "source": "Rational dialogue tradition"
+      }
+    },
+    {
+      "id": "social_contracts_possible",
+      "title": "Social cooperation and agreements are possible",
+      "description": "If cooperation is possible and actions have consequences, then people can form mutually beneficial agreements and social structures.",
+      "conclusion": "Society and governance can be legitimately organized",
+      "category": "political",
+      "level": 1,
+      "metadata": {
+        "tags": [
+          "cooperation",
+          "society",
+          "agreements"
+        ],
+        "strength": 0.8,
+        "source": "Social contract theory"
+      }
+    },
+    {
+      "id": "causal_laws_exist",
+      "title": "Causal laws govern reality",
+      "description": "If patterns exist and actions have consequences, then reality operates according to discoverable causal laws and regularities.",
+      "conclusion": "The universe operates according to natural laws",
+      "category": "metaphysics",
+      "level": 1,
+      "metadata": {
+        "tags": [
+          "causation",
+          "natural laws",
+          "regularity"
+        ],
+        "strength": 0.8,
+        "source": "Scientific naturalism"
+      }
+    },
+    {
+      "id": "stable_reality_exists",
+      "title": "Reality has stable structure",
+      "description": "If something exists and patterns exist, then reality has some stable, persistent structure that enables consistent patterns.",
+      "conclusion": "The world has an underlying stable structure",
+      "category": "metaphysics",
+      "level": 1,
+      "metadata": {
+        "tags": [
+          "stability",
+          "structure",
+          "persistence"
+        ],
+        "strength": 0.8,
+        "source": "Structural realism"
+      }
+    },
+    {
+      "id": "values_guide_choices",
+      "title": "Values can guide rational choice",
+      "description": "If choices can be made and differences matter, then rational agents can use values and preferences to guide their decision-making.",
+      "conclusion": "Rational value-based decision making is possible",
+      "category": "ethics",
+      "level": 1,
+      "metadata": {
+        "tags": [
+          "values",
+          "choice",
+          "rationality"
+        ],
+        "strength": 0.8,
+        "source": "Rational choice theory"
+      }
+    },
+    {
+      "id": "harm_prevention_matters",
+      "title": "Preventing unnecessary harm matters",
+      "description": "If suffering exists and actions have consequences, then actions that prevent or reduce unnecessary suffering have moral significance.",
+      "conclusion": "We have moral reasons to prevent unnecessary suffering",
+      "category": "ethics",
+      "level": 1,
+      "metadata": {
+        "tags": [
+          "harm prevention",
+          "suffering",
+          "moral duty"
+        ],
+        "strength": 0.9,
+        "source": "Utilitarian tradition"
+      }
+    },
+    {
+      "id": "shared_reasoning_possible",
+      "title": "Shared standards of reasoning are possible",
+      "description": "If logic is reliable and communication between minds is possible, then people can share and apply common standards of reasoning.",
+      "conclusion": "Universal logical principles can guide human thought",
+      "category": "logic",
+      "level": 1,
+      "metadata": {
+        "tags": [
+          "shared reasoning",
+          "logical standards",
+          "universality"
+        ],
+        "strength": 0.9,
+        "source": "Logic and rationality"
+      }
+    },
+    {
+      "id": "justice_possible",
+      "title": "Justice and fairness are achievable",
+      "description": "If cooperation is possible and moral facts exist, then people can work together to create just institutions based on objective moral principles.",
+      "conclusion": "Just societies can be established and maintained",
+      "category": "political",
+      "level": 1,
+      "metadata": {
+        "tags": [
+          "justice",
+          "fairness",
+          "institutions"
+        ],
+        "strength": 0.7,
+        "source": "Political philosophy"
+      }
+    },
+    {
+      "id": "scientific_method_valid",
+      "title": "Scientific method discovers objective truths",
+      "description": "If knowledge is possible and objective reality exists, then systematic empirical investigation can discover objective truths about the natural world.",
+      "conclusion": "Science provides reliable knowledge about reality",
+      "category": "epistemology",
+      "level": 2,
+      "metadata": {
+        "tags": [
+          "science",
+          "empiricism",
+          "truth discovery"
+        ],
+        "strength": 0.8,
+        "source": "Scientific realism"
+      }
+    },
+    {
+      "id": "moral_progress_possible",
+      "title": "Moral progress is possible",
+      "description": "If moral facts exist and rational discourse is possible, then humanity can make genuine progress in understanding and implementing moral truths.",
+      "conclusion": "Moral knowledge and practice can improve over time",
+      "category": "ethics",
+      "level": 2,
+      "metadata": {
+        "tags": [
+          "moral progress",
+          "improvement",
+          "historical development"
+        ],
+        "strength": 0.7,
+        "source": "Moral progressivism"
+      }
+    },
+    {
+      "id": "prediction_and_control_possible",
+      "title": "Prediction and control of nature is possible",
+      "description": "If causal laws govern reality and knowledge is possible, then we can predict future events and control natural processes through understanding.",
+      "conclusion": "Technology and engineering are fundamentally sound enterprises",
+      "category": "epistemology",
+      "level": 2,
+      "metadata": {
+        "tags": [
+          "prediction",
+          "control",
+          "technology"
+        ],
+        "strength": 0.9,
+        "source": "Applied science"
+      }
+    },
+    {
+      "id": "legitimate_government_possible",
+      "title": "Legitimate government is possible",
+      "description": "If justice is achievable and social cooperation is possible, then legitimate political authority can be established through just institutions.",
+      "conclusion": "Good governance based on consent and justice is achievable",
+      "category": "political",
+      "level": 2,
+      "metadata": {
+        "tags": [
+          "legitimacy",
+          "government",
+          "political authority"
+        ],
+        "strength": 0.7,
+        "source": "Democratic theory"
+      }
+    },
+    {
+      "id": "ethical_obligations_exist",
+      "title": "We have ethical obligations to others",
+      "description": "If moral responsibility exists and preventing harm matters, then we have genuine obligations to consider the welfare of other moral agents.",
+      "conclusion": "Ethics involves duties to others, not just personal preferences",
+      "category": "ethics",
+      "level": 2,
+      "metadata": {
+        "tags": [
+          "obligations",
+          "duties",
+          "other-regarding ethics"
+        ],
+        "strength": 0.8,
+        "source": "Deontological ethics"
+      }
+    },
+    {
+      "id": "metaphysical_realism_true",
+      "title": "Metaphysical realism is true",
+      "description": "If objective reality exists and reality has stable structure, then there exists a mind-independent world with definite properties and structures.",
+      "conclusion": "The world exists independently of human thought and has objective features",
+      "category": "metaphysics",
+      "level": 2,
+      "metadata": {
+        "tags": [
+          "metaphysical realism",
+          "mind-independence",
+          "objective properties"
+        ],
+        "strength": 0.8,
+        "source": "Metaphysical realism"
+      }
+    },
+    {
+      "id": "objective_values_exist",
+      "title": "Objective values exist",
+      "description": "If values can guide rational choice and moral facts exist, then there are objective values that provide genuine reasons for action.",
+      "conclusion": "Some values are objectively better than others",
+      "category": "ethics",
+      "level": 2,
+      "metadata": {
+        "tags": [
+          "objective values",
+          "reasons for action",
+          "value theory"
+        ],
+        "strength": 0.6,
+        "source": "Value realism"
+      }
+    },
+    {
+      "id": "universal_rationality_possible",
+      "title": "Universal standards of rationality are possible",
+      "description": "If shared reasoning standards are possible and knowledge is achievable, then universal principles of rational thought can be identified and applied.",
+      "conclusion": "Reason provides universal criteria for evaluating beliefs and arguments",
+      "category": "logic",
+      "level": 2,
+      "metadata": {
+        "tags": [
+          "universal rationality",
+          "rational standards",
+          "cognitive norms"
+        ],
+        "strength": 0.8,
+        "source": "Rationalist epistemology"
+      }
+    },
+    {
+      "id": "philosophical_inquiry_valuable",
+      "title": "Philosophical inquiry has value",
+      "description": "If rational discourse is possible and moral progress is achievable, then philosophical reflection and debate can contribute to human understanding and improvement.",
+      "conclusion": "Philosophy can make genuine contributions to human knowledge and welfare",
+      "category": "epistemology",
+      "level": 2,
+      "metadata": {
+        "tags": [
+          "philosophy",
+          "inquiry",
+          "intellectual progress"
+        ],
+        "strength": 0.7,
+        "source": "Philosophical tradition"
+      }
+    },
+    {
+      "id": "natural_kinds_exist",
+      "title": "Natural kinds and essences exist",
+      "description": "If reality has stable structure and causal laws exist, then nature is organized into real kinds with essential properties that ground causal powers.",
+      "conclusion": "Scientific classification reflects objective features of reality",
+      "category": "metaphysics",
+      "level": 2,
+      "metadata": {
+        "tags": [
+          "natural kinds",
+          "essentialism",
+          "scientific classification"
+        ],
+        "strength": 0.6,
+        "source": "Scientific essentialism"
+      }
+    },
+    {
+      "id": "rule_of_law_essential",
+      "title": "Rule of law is essential for justice",
+      "description": "If legitimate government is possible and social cooperation requires agreements, then consistent application of just laws is necessary for social order.",
+      "conclusion": "Legal institutions must operate according to impartial, consistent principles",
+      "category": "political",
+      "level": 2,
+      "metadata": {
+        "tags": [
+          "rule of law",
+          "legal institutions",
+          "consistency"
+        ],
+        "strength": 0.8,
+        "source": "Legal philosophy"
+      }
+    },
+    {
+      "id": "human_rights_universal",
+      "title": "Universal human rights exist",
+      "description": "If we have ethical obligations to others and legitimate government is possible, then all humans possess fundamental rights that just governments must protect.",
+      "conclusion": "Human rights provide universal moral and political standards",
+      "category": "political",
+      "level": 2,
+      "metadata": {
+        "tags": [
+          "human rights",
+          "universality",
+          "fundamental rights"
+        ],
+        "strength": 0.7,
+        "source": "Human rights theory"
+      }
+    },
+    {
+      "id": "naturalism_well_supported",
+      "title": "Naturalism is well-supported",
+      "description": "If science discovers objective truths and metaphysical realism is true, then the naturalistic worldview that relies on scientific methods is strongly supported.",
+      "conclusion": "The natural world as described by science is likely all that exists",
+      "category": "metaphysics",
+      "level": 3,
+      "metadata": {
+        "tags": [
+          "naturalism",
+          "scientific worldview",
+          "metaphysics"
+        ],
+        "strength": 0.7,
+        "source": "Scientific naturalism"
+      }
+    },
+    {
+      "id": "enlightenment_project_valid",
+      "title": "The Enlightenment project is valid",
+      "description": "If moral progress is possible and universal rationality exists, then the Enlightenment goal of using reason to improve human conditions is a valid and achievable project.",
+      "conclusion": "Reason can guide humanity toward better societies and institutions",
+      "category": "political",
+      "level": 3,
+      "metadata": {
+        "tags": [
+          "enlightenment",
+          "reason",
+          "progress"
+        ],
+        "strength": 0.7,
+        "source": "Enlightenment philosophy"
+      }
+    },
+    {
+      "id": "technology_must_serve_humanity",
+      "title": "Technology must serve human dignity",
+      "description": "If prediction and control of nature is possible and universal human rights exist, then technological development should be guided by respect for human dignity and rights.",
+      "conclusion": "Technological progress must be ethically constrained",
+      "category": "ethics",
+      "level": 3,
+      "metadata": {
+        "tags": [
+          "technology ethics",
+          "human dignity",
+          "responsible innovation"
+        ],
+        "strength": 0.8,
+        "source": "Technology ethics"
+      }
+    },
+    {
+      "id": "constitutional_democracy_optimal",
+      "title": "Constitutional democracy is optimal",
+      "description": "If legitimate government is possible and rule of law is essential, then constitutional democracies that limit power through law provide the best form of government.",
+      "conclusion": "Constitutional democratic systems best protect liberty and enable flourishing",
+      "category": "political",
+      "level": 3,
+      "metadata": {
+        "tags": [
+          "constitutional democracy",
+          "separation of powers",
+          "optimal government"
+        ],
+        "strength": 0.7,
+        "source": "Democratic constitutionalism"
+      }
+    },
+    {
+      "id": "virtue_ethics_valid",
+      "title": "Virtue ethics provides moral guidance",
+      "description": "If we have ethical obligations to others and objective values exist, then cultivating virtuous character traits that align with objective values is morally important.",
+      "conclusion": "Character development and virtue cultivation are central to ethics",
+      "category": "ethics",
+      "level": 3,
+      "metadata": {
+        "tags": [
+          "virtue ethics",
+          "character",
+          "moral development"
+        ],
+        "strength": 0.6,
+        "source": "Aristotelian virtue ethics"
+      }
+    },
+    {
+      "id": "interdisciplinary_inquiry_valuable",
+      "title": "Interdisciplinary inquiry enhances understanding",
+      "description": "If philosophical inquiry has value and science discovers truths, then combining philosophical reflection with scientific investigation yields deeper understanding.",
+      "conclusion": "Philosophy and science should collaborate to address fundamental questions",
+      "category": "epistemology",
+      "level": 3,
+      "metadata": {
+        "tags": [
+          "interdisciplinary",
+          "philosophy of science",
+          "collaboration"
+        ],
+        "strength": 0.8,
+        "source": "Philosophy of science"
+      }
+    },
+    {
+      "id": "scientific_realism_about_theories",
+      "title": "Scientific theories refer to real entities",
+      "description": "If natural kinds exist and universal rationality is possible, then successful scientific theories genuinely refer to real structures and entities in nature.",
+      "conclusion": "Theoretical entities postulated by science likely exist",
+      "category": "epistemology",
+      "level": 3,
+      "metadata": {
+        "tags": [
+          "scientific realism",
+          "theoretical entities",
+          "reference"
+        ],
+        "strength": 0.6,
+        "source": "Philosophy of science"
+      }
+    },
+    {
+      "id": "secular_humanism_viable",
+      "title": "Secular humanism is a viable worldview",
+      "description": "If universal human rights exist and naturalism is well-supported, then a non-religious humanistic worldview can provide adequate moral and meaning frameworks.",
+      "conclusion": "Religious belief is not necessary for moral living and human flourishing",
+      "category": "ethics",
+      "level": 3,
+      "metadata": {
+        "tags": [
+          "secular humanism",
+          "non-religious ethics",
+          "meaning"
+        ],
+        "strength": 0.6,
+        "source": "Humanist philosophy"
+      }
+    },
+    {
+      "id": "democratic_governance_of_technology",
+      "title": "Technology should be democratically governed",
+      "description": "If constitutional democracy is optimal and technology must serve humanity, then democratic institutions should guide technological development and regulation.",
+      "conclusion": "Citizens should have democratic input into technological choices affecting society",
+      "category": "political",
+      "level": 3,
+      "metadata": {
+        "tags": [
+          "democratic governance",
+          "technology policy",
+          "citizen participation"
+        ],
+        "strength": 0.7,
+        "source": "Democratic theory"
+      }
+    },
+    {
+      "id": "practical_wisdom_cultivation",
+      "title": "Practical wisdom should be cultivated",
+      "description": "If virtue ethics provides moral guidance and interdisciplinary inquiry enhances understanding, then developing practical wisdom through broad learning is essential for good living.",
+      "conclusion": "Education should aim at developing practical wisdom, not just technical skills",
+      "category": "ethics",
+      "level": 3,
+      "metadata": {
+        "tags": [
+          "practical wisdom",
+          "education",
+          "integrated learning"
+        ],
+        "strength": 0.7,
+        "source": "Aristotelian practical philosophy"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "existence_logic_to_objective_reality",
+      "fromNode": "something_exists",
+      "toNode": "objective_reality_exists",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "If something exists, logic suggests there's an objective reality"
+    },
+    {
+      "id": "logic_to_objective_reality",
+      "fromNode": "logic_works",
+      "toNode": "objective_reality_exists",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Logic provides the reasoning framework for objective reality"
+    },
+    {
+      "id": "patterns_to_knowledge",
+      "fromNode": "patterns_exist",
+      "toNode": "knowledge_is_possible",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.9
+      },
+      "explanation": "Patterns provide the basis for reliable knowledge"
+    },
+    {
+      "id": "reasoning_to_knowledge",
+      "fromNode": "minds_can_reason",
+      "toNode": "knowledge_is_possible",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.9
+      },
+      "explanation": "Reasoning ability enables knowledge acquisition"
+    },
+    {
+      "id": "differences_to_moral_facts",
+      "fromNode": "differences_matter",
+      "toNode": "moral_facts_exist",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "If differences matter, moral distinctions are real"
+    },
+    {
+      "id": "suffering_to_moral_facts",
+      "fromNode": "suffering_exists",
+      "toNode": "moral_facts_exist",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Suffering creates objective moral facts about what matters"
+    },
+    {
+      "id": "consequences_to_responsibility",
+      "fromNode": "actions_have_consequences",
+      "toNode": "moral_responsibility_exists",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.9
+      },
+      "explanation": "Consequences make responsibility possible"
+    },
+    {
+      "id": "choice_to_responsibility",
+      "fromNode": "choice_exists",
+      "toNode": "moral_responsibility_exists",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.9
+      },
+      "explanation": "Choice is necessary for moral responsibility"
+    },
+    {
+      "id": "communication_to_discourse",
+      "fromNode": "communication_possible",
+      "toNode": "rational_discourse_possible",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.9
+      },
+      "explanation": "Communication enables rational discourse"
+    },
+    {
+      "id": "reasoning_to_discourse",
+      "fromNode": "minds_can_reason",
+      "toNode": "rational_discourse_possible",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Reasoning ability makes discourse rational"
+    },
+    {
+      "id": "cooperation_to_contracts",
+      "fromNode": "cooperation_possible",
+      "toNode": "social_contracts_possible",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.9
+      },
+      "explanation": "Cooperation enables social agreements"
+    },
+    {
+      "id": "consequences_to_contracts",
+      "fromNode": "actions_have_consequences",
+      "toNode": "social_contracts_possible",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Consequences make agreements meaningful"
+    },
+    {
+      "id": "patterns_to_causal_laws",
+      "fromNode": "patterns_exist",
+      "toNode": "causal_laws_exist",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.9
+      },
+      "explanation": "Patterns suggest underlying causal laws"
+    },
+    {
+      "id": "consequences_to_causal_laws",
+      "fromNode": "actions_have_consequences",
+      "toNode": "causal_laws_exist",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Consequences demonstrate causal relationships"
+    },
+    {
+      "id": "existence_to_stable_reality",
+      "fromNode": "something_exists",
+      "toNode": "stable_reality_exists",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Existence implies some stable structure"
+    },
+    {
+      "id": "patterns_to_stable_reality",
+      "fromNode": "patterns_exist",
+      "toNode": "stable_reality_exists",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.9
+      },
+      "explanation": "Patterns require stable underlying reality"
+    },
+    {
+      "id": "choice_to_values",
+      "fromNode": "choice_exists",
+      "toNode": "values_guide_choices",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Choice enables value-based decision making"
+    },
+    {
+      "id": "differences_to_values",
+      "fromNode": "differences_matter",
+      "toNode": "values_guide_choices",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Meaningful differences create values"
+    },
+    {
+      "id": "suffering_to_harm_prevention",
+      "fromNode": "suffering_exists",
+      "toNode": "harm_prevention_matters",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.9
+      },
+      "explanation": "Real suffering makes harm prevention important"
+    },
+    {
+      "id": "consequences_to_harm_prevention",
+      "fromNode": "actions_have_consequences",
+      "toNode": "harm_prevention_matters",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Consequences mean we can prevent harm"
+    },
+    {
+      "id": "logic_to_shared_reasoning",
+      "fromNode": "logic_works",
+      "toNode": "shared_reasoning_possible",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.9
+      },
+      "explanation": "Logic provides universal reasoning standards"
+    },
+    {
+      "id": "communication_to_shared_reasoning",
+      "fromNode": "communication_possible",
+      "toNode": "shared_reasoning_possible",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.9
+      },
+      "explanation": "Communication enables shared reasoning"
+    },
+    {
+      "id": "cooperation_to_justice",
+      "fromNode": "cooperation_possible",
+      "toNode": "justice_possible",
+      "fromType": "axiom",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Cooperation enables just institutions"
+    },
+    {
+      "id": "knowledge_reality_to_science",
+      "fromNode": "knowledge_is_possible",
+      "toNode": "scientific_method_valid",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.9
+      },
+      "explanation": "Knowledge and objective reality enable scientific method"
+    },
+    {
+      "id": "objective_reality_to_science",
+      "fromNode": "objective_reality_exists",
+      "toNode": "scientific_method_valid",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Objective reality is what science studies"
+    },
+    {
+      "id": "moral_facts_to_progress",
+      "fromNode": "moral_facts_exist",
+      "toNode": "moral_progress_possible",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Moral facts enable genuine moral progress"
+    },
+    {
+      "id": "discourse_to_moral_progress",
+      "fromNode": "rational_discourse_possible",
+      "toNode": "moral_progress_possible",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Rational discourse enables moral progress"
+    },
+    {
+      "id": "causal_laws_to_prediction",
+      "fromNode": "causal_laws_exist",
+      "toNode": "prediction_and_control_possible",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.9
+      },
+      "explanation": "Causal laws enable prediction and control"
+    },
+    {
+      "id": "knowledge_to_prediction",
+      "fromNode": "knowledge_is_possible",
+      "toNode": "prediction_and_control_possible",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Knowledge enables prediction and control"
+    },
+    {
+      "id": "justice_to_government",
+      "fromNode": "justice_possible",
+      "toNode": "legitimate_government_possible",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Justice enables legitimate government"
+    },
+    {
+      "id": "contracts_to_government",
+      "fromNode": "social_contracts_possible",
+      "toNode": "legitimate_government_possible",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Social contracts create legitimate authority"
+    },
+    {
+      "id": "responsibility_to_obligations",
+      "fromNode": "moral_responsibility_exists",
+      "toNode": "ethical_obligations_exist",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Responsibility creates ethical obligations"
+    },
+    {
+      "id": "harm_prevention_to_obligations",
+      "fromNode": "harm_prevention_matters",
+      "toNode": "ethical_obligations_exist",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Harm prevention is an ethical obligation"
+    },
+    {
+      "id": "objective_stable_to_realism",
+      "fromNode": "objective_reality_exists",
+      "toNode": "metaphysical_realism_true",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.9
+      },
+      "explanation": "Objective stable reality supports metaphysical realism"
+    },
+    {
+      "id": "stable_to_realism",
+      "fromNode": "stable_reality_exists",
+      "toNode": "metaphysical_realism_true",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Stable reality supports realism"
+    },
+    {
+      "id": "values_choices_to_objective_values",
+      "fromNode": "values_guide_choices",
+      "toNode": "objective_values_exist",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.7
+      },
+      "explanation": "Value-guided choices suggest objective values"
+    },
+    {
+      "id": "moral_facts_to_objective_values",
+      "fromNode": "moral_facts_exist",
+      "toNode": "objective_values_exist",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Moral facts imply objective values"
+    },
+    {
+      "id": "shared_reasoning_to_universal",
+      "fromNode": "shared_reasoning_possible",
+      "toNode": "universal_rationality_possible",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Shared reasoning enables universal rationality"
+    },
+    {
+      "id": "knowledge_to_universal_rationality",
+      "fromNode": "knowledge_is_possible",
+      "toNode": "universal_rationality_possible",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.7
+      },
+      "explanation": "Knowledge supports universal rational standards"
+    },
+    {
+      "id": "discourse_to_philosophy",
+      "fromNode": "rational_discourse_possible",
+      "toNode": "philosophical_inquiry_valuable",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Rational discourse makes philosophy valuable"
+    },
+    {
+      "id": "moral_progress_to_philosophy",
+      "fromNode": "moral_progress_possible",
+      "toNode": "philosophical_inquiry_valuable",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.7
+      },
+      "explanation": "Moral progress validates philosophical inquiry"
+    },
+    {
+      "id": "stable_causal_to_natural_kinds",
+      "fromNode": "stable_reality_exists",
+      "toNode": "natural_kinds_exist",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.7
+      },
+      "explanation": "Stable reality with causal laws suggests natural kinds"
+    },
+    {
+      "id": "causal_laws_to_natural_kinds",
+      "fromNode": "causal_laws_exist",
+      "toNode": "natural_kinds_exist",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.6
+      },
+      "explanation": "Causal laws organize reality into natural kinds"
+    },
+    {
+      "id": "contracts_to_rule_of_law",
+      "fromNode": "social_contracts_possible",
+      "toNode": "rule_of_law_essential",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Social contracts require rule of law"
+    },
+    {
+      "id": "government_to_rule_of_law",
+      "fromNode": "legitimate_government_possible",
+      "toNode": "rule_of_law_essential",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Legitimate government requires rule of law"
+    },
+    {
+      "id": "obligations_to_rights",
+      "fromNode": "ethical_obligations_exist",
+      "toNode": "human_rights_universal",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Ethical obligations create universal rights"
+    },
+    {
+      "id": "government_to_rights",
+      "fromNode": "legitimate_government_possible",
+      "toNode": "human_rights_universal",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.7
+      },
+      "explanation": "Legitimate government must protect rights"
+    },
+    {
+      "id": "science_realism_to_naturalism",
+      "fromNode": "scientific_method_valid",
+      "toNode": "naturalism_well_supported",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Valid science and realism support naturalism"
+    },
+    {
+      "id": "realism_to_naturalism",
+      "fromNode": "metaphysical_realism_true",
+      "toNode": "naturalism_well_supported",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.7
+      },
+      "explanation": "Metaphysical realism supports naturalistic worldview"
+    },
+    {
+      "id": "progress_rationality_to_enlightenment",
+      "fromNode": "moral_progress_possible",
+      "toNode": "enlightenment_project_valid",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Moral progress and rationality validate Enlightenment"
+    },
+    {
+      "id": "rationality_to_enlightenment",
+      "fromNode": "universal_rationality_possible",
+      "toNode": "enlightenment_project_valid",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.7
+      },
+      "explanation": "Universal rationality enables Enlightenment project"
+    },
+    {
+      "id": "prediction_rights_to_tech_ethics",
+      "fromNode": "prediction_and_control_possible",
+      "toNode": "technology_must_serve_humanity",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Technological power must respect human rights"
+    },
+    {
+      "id": "rights_to_tech_ethics",
+      "fromNode": "human_rights_universal",
+      "toNode": "technology_must_serve_humanity",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Human rights constrain technology"
+    },
+    {
+      "id": "government_law_to_democracy",
+      "fromNode": "legitimate_government_possible",
+      "toNode": "constitutional_democracy_optimal",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8
+      },
+      "explanation": "Legitimate government with rule of law supports democracy"
+    },
+    {
+      "id": "rule_of_law_to_democracy",
+      "fromNode": "rule_of_law_essential",
+      "toNode": "constitutional_democracy_optimal",
+      "fromType": "argument",
+      "toType": "argument",
+      "relation": {
+        "type": "supports",
+        "strength": 0.7
+      },
+      "explanation": "Rule of law is essential for constitutional democracy"
+    },
+    {
+      "id": "reality_enables_knowledge",
+      "fromAxiom": "reality_exists",
+      "toAxiom": "knowledge_possible",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8,
+        "bidirectional": false
+      },
+      "explanation": "If reality exists independently, then it provides a stable foundation for gaining knowledge through observation and reasoning",
+      "metadata": {
+        "difficulty": "basic"
+      }
+    },
+    {
+      "id": "knowledge_enables_ethics",
+      "fromAxiom": "knowledge_possible",
+      "toAxiom": "suffering_bad",
+      "relation": {
+        "type": "supports",
+        "strength": 0.6,
+        "bidirectional": false
+      },
+      "explanation": "If we can gain knowledge, we can understand the nature of suffering and make moral judgments about it",
+      "metadata": {
+        "difficulty": "basic"
+      }
+    },
+    {
+      "id": "consciousness_requires_reality",
+      "fromAxiom": "consciousness_real",
+      "toAxiom": "reality_exists",
+      "relation": {
+        "type": "requires",
+        "strength": 0.9,
+        "bidirectional": false
+      },
+      "explanation": "For consciousness to be real, there must be something (reality) in which it exists",
+      "metadata": {
+        "difficulty": "intermediate"
+      }
+    },
+    {
+      "id": "free_will_vs_physicalism",
+      "fromAxiom": "free_will_exists",
+      "toAxiom": "physicalism",
+      "relation": {
+        "type": "contradicts",
+        "strength": 0.7,
+        "bidirectional": true
+      },
+      "explanation": "If everything is physical and follows physical laws, genuine free will seems impossible",
+      "metadata": {
+        "difficulty": "advanced"
+      }
+    },
+    {
+      "id": "logic_enables_knowledge",
+      "fromAxiom": "logical_consistency",
+      "toAxiom": "knowledge_possible",
+      "relation": {
+        "type": "requires",
+        "strength": 0.9,
+        "bidirectional": false
+      },
+      "explanation": "Valid knowledge requires logical consistency in our reasoning processes",
+      "metadata": {
+        "difficulty": "basic"
+      }
+    },
+    {
+      "id": "induction_enables_knowledge",
+      "fromAxiom": "induction_valid",
+      "toAxiom": "knowledge_possible",
+      "relation": {
+        "type": "supports",
+        "strength": 0.8,
+        "bidirectional": false
+      },
+      "explanation": "Much of our knowledge depends on inductive reasoning from experience",
+      "metadata": {
+        "difficulty": "intermediate"
+      }
+    },
+    {
+      "id": "moral_realism_supports_suffering",
+      "fromAxiom": "moral_realism",
+      "toAxiom": "suffering_bad",
+      "relation": {
+        "type": "supports",
+        "strength": 0.7,
+        "bidirectional": false
+      },
+      "explanation": "If moral facts are objective, then facts about suffering being bad could be objectively true",
+      "metadata": {
+        "difficulty": "advanced"
+      }
+    },
+    {
+      "id": "social_contract_supports_rights",
+      "fromAxiom": "social_contract",
+      "toAxiom": "individual_rights",
+      "relation": {
+        "type": "supports",
+        "strength": 0.6,
+        "bidirectional": false
+      },
+      "explanation": "Social contract theory can provide a foundation for individual rights through mutual agreement",
+      "metadata": {
+        "difficulty": "advanced"
+      }
+    }
+  ]
+}
