@@ -50,12 +50,57 @@ function GraphViewInner({ axioms, arguments: argumentNodes, edges, categories, s
 
   const getCategoryById = (id: string) => categories.find(c => c.id === id);
 
-  // Calculate which arguments are valid based on accepted axioms/arguments
+  // Calculate which arguments are valid based on accepted axioms using activation conditions
   const validArguments = useMemo(() => {
     const valid = new Set<string>();
-    const acceptedNodes = new Set(session.acceptedAxioms);
+    const acceptedAxioms = new Set(session.acceptedAxioms);
     
-    // Iteratively add arguments whose prerequisites are met
+    // Helper function to check if an argument can be activated
+    const canActivateArgument = (argument: Argument, visited = new Set<string>()): boolean => {
+      if (visited.has(argument.id)) return false; // Prevent circular dependencies
+      if (!argument.activation_conditions) return false; // No activation conditions means can't activate
+      
+      visited.add(argument.id);
+      
+      const conditions = argument.activation_conditions;
+      
+      // Check required axioms
+      if (conditions.required_axioms) {
+        for (const axId of conditions.required_axioms) {
+          if (!acceptedAxioms.has(axId)) return false;
+        }
+      }
+      
+      // Check forbidden axioms
+      if (conditions.forbidden_axioms) {
+        for (const axId of conditions.forbidden_axioms) {
+          if (acceptedAxioms.has(axId)) return false;
+        }
+      }
+      
+      // Check required arguments (recursive)
+      if (conditions.required_arguments) {
+        for (const reqArgId of conditions.required_arguments) {
+          if (!valid.has(reqArgId)) {
+            const reqArg = argumentNodes.find(a => a.id === reqArgId);
+            if (!reqArg || !canActivateArgument(reqArg, new Set(visited))) {
+              return false;
+            }
+          }
+        }
+      }
+      
+      // Check forbidden arguments
+      if (conditions.forbidden_arguments) {
+        for (const forbiddenArgId of conditions.forbidden_arguments) {
+          if (valid.has(forbiddenArgId)) return false;
+        }
+      }
+      
+      return true;
+    };
+    
+    // Iteratively add arguments whose activation conditions are met
     let changed = true;
     while (changed) {
       changed = false;
@@ -63,27 +108,15 @@ function GraphViewInner({ axioms, arguments: argumentNodes, edges, categories, s
       for (const argument of argumentNodes) {
         if (valid.has(argument.id)) continue;
         
-        // Find all prerequisite edges for this argument
-        const prerequisites = edges.filter(edge => 
-          edge.toNode === argument.id && 
-          edge.toType === 'argument' && 
-          (edge.relation.type === 'supports' || edge.relation.type === 'requires')
-        );
-        
-        // Check if all prerequisites are satisfied
-        const allPrerequisitesMet = prerequisites.length === 0 || 
-          prerequisites.every(edge => acceptedNodes.has(edge.fromNode) || valid.has(edge.fromNode));
-        
-        if (allPrerequisitesMet) {
+        if (canActivateArgument(argument)) {
           valid.add(argument.id);
-          acceptedNodes.add(argument.id);
           changed = true;
         }
       }
     }
     
     return valid;
-  }, [argumentNodes, edges, session.acceptedAxioms]);
+  }, [argumentNodes, session.acceptedAxioms]);
 
   // Calculate hierarchical layout
   const layout = useMemo(() => {
