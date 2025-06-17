@@ -23,7 +23,7 @@ dataLoader.onDataChange(() => {
 // Register API routes
 app.use((0, routes_1.createRoutes)(dataLoader));
 // Serve static frontend files from "public" directory
-const staticDir = path_1.default.join(__dirname, 'public');
+const staticDir = path_1.default.join(__dirname, '../public');
 if (fs_1.default.existsSync(staticDir)) {
     app.use(express_1.default.static(staticDir));
     // Catch-all route for React Router (only for non-API paths)

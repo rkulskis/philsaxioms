@@ -1,5 +1,5 @@
 arguments:
-  # LEVEL 4: Advanced arguments building on level 3
+  # LEVEL 4: Advanced arguments building on level 3 (reduced set with strict dependencies)
 
   - id: technological_singularity_possible
     title: "Technological singularity is conceptually possible"
@@ -33,57 +33,6 @@ arguments:
       attribution: ["utilitarianism", "mill"]
       controversy: 0.7
 
-  - id: universal_basic_income_necessary
-    title: "Universal basic income becomes necessary"
-    description: "If technological unemployment is inevitable and human rights are universal, then society must provide basic income to ensure human dignity."
-    conclusion: "UBI is a moral and practical necessity in advanced societies"
-    category: political
-    level: 4
-    dependencies: ["technological_unemployment_inevitable", "human_rights_universal", "economic_systems_reformable"]
-    activation_conditions:
-      required_arguments: ["human_rights_universal"]
-      required_axioms: ["cooperation_possible"]
-    metadata:
-      tags: ["UBI", "economic justice", "automation"]
-      strength: 0.7
-      source: "Economic policy, social welfare theory"
-      attribution: ["utilitarianism", "social_contract", "dimon"]
-      controversy: 0.6
-
-  - id: effective_altruism_optimal
-    title: "Effective altruism provides optimal moral framework"
-    description: "If we have ethical obligations to others and scientific method can guide moral decisions, then we should use evidence and reason to maximize good."
-    conclusion: "We should allocate resources to maximize expected utility"
-    category: ethics
-    level: 4
-    dependencies: ["ethical_obligations_exist", "scientific_method_valid", "consequentialist_ethics_correct"]
-    activation_conditions:
-      required_arguments: ["ethical_obligations_exist", "scientific_method_valid"]
-      required_axioms: ["suffering_exists", "minds_can_reason"]
-    metadata:
-      tags: ["effective altruism", "utilitarian calculation", "moral optimization"]
-      strength: 0.8
-      source: "Effective altruism movement"
-      attribution: ["utilitarianism", "mill", "simons"]
-      controversy: 0.4
-
-  - id: longtermism_morally_required
-    title: "Long-term thinking is morally required"
-    description: "If future generations have moral worth and our actions affect the long-term future, then we must prioritize long-term consequences in moral reasoning."
-    conclusion: "Present decisions should be evaluated primarily by their long-term effects"
-    category: ethics
-    level: 4
-    dependencies: ["future_generations_matter", "long_term_consequences_knowable", "effective_altruism_optimal"]
-    activation_conditions:
-      required_arguments: ["effective_altruism_optimal"]
-      required_axioms: ["actions_have_consequences", "suffering_exists"]
-    metadata:
-      tags: ["longtermism", "future ethics", "intergenerational justice"]
-      strength: 0.7
-      source: "Longtermist philosophy"
-      attribution: ["utilitarianism", "mill"]
-      controversy: 0.5
-
   - id: simulation_hypothesis_plausible
     title: "Simulation hypothesis is plausible"
     description: "If artificial consciousness is possible and computational power grows exponentially, then advanced civilizations likely run ancestor simulations."
@@ -100,23 +49,6 @@ arguments:
       attribution: ["materialism", "simons"]
       controversy: 0.9
 
-  - id: global_governance_inevitable
-    title: "Global governance becomes inevitable"
-    description: "If global problems require coordinated solutions and legitimate government is possible, then effective global governance institutions will eventually emerge."
-    conclusion: "World government or strong global institutions are humanity's future"
-    category: political
-    level: 4
-    dependencies: ["global_coordination_problems", "legitimate_government_possible", "international_cooperation_possible"]
-    activation_conditions:
-      required_arguments: ["legitimate_government_possible"]
-      required_axioms: ["cooperation_possible", "communication_possible"]
-    metadata:
-      tags: ["world government", "global governance", "international cooperation"]
-      strength: 0.6
-      source: "International relations theory"
-      attribution: ["social_contract", "locke", "dimon"]
-      controversy: 0.7
-
   - id: death_optional_future
     title: "Death becomes optional through technology"
     description: "If scientific method is valid and biological limitations are surmountable, then aging and death could become technologically preventable."
@@ -131,40 +63,6 @@ arguments:
       strength: 0.5
       source: "Transhumanist philosophy"
       attribution: ["materialism", "simons"]
-      controversy: 0.8
-
-  - id: meaning_created_not_discovered
-    title: "Life's meaning is created, not discovered"
-    description: "If objective values exist but cosmic purpose is absent, then humans must create meaning through their choices and commitments rather than discovering pre-existing purpose."
-    conclusion: "We are responsible for creating meaning in an otherwise purposeless universe"
-    category: consciousness
-    level: 4
-    dependencies: ["objective_values_exist", "cosmic_purpose_absent", "existential_authenticity_possible"]
-    activation_conditions:
-      required_arguments: ["objective_values_exist"]
-      required_axioms: ["choice_exists", "differences_matter"]
-    metadata:
-      tags: ["existentialism", "life meaning", "human purpose"]
-      strength: 0.7
-      source: "Existentialist philosophy"
-      attribution: ["existentialism", "virtue_ethics"]
-      controversy: 0.6
-
-  - id: philosophical_zombies_impossible
-    title: "Philosophical zombies are impossible"
-    description: "If consciousness has causal powers and physical processes are sufficient for consciousness, then beings physically identical to conscious entities must also be conscious."
-    conclusion: "Consciousness necessarily accompanies certain physical processes"
-    category: consciousness
-    level: 4
-    dependencies: ["consciousness_causal_powers", "physical_processes_sufficient_consciousness", "mind_body_problem_solvable"]
-    activation_conditions:
-      required_arguments: ["mind_body_problem_solvable"]
-      required_axioms: ["patterns_exist", "logic_works"]
-    metadata:
-      tags: ["consciousness", "zombies", "philosophy of mind"]
-      strength: 0.6
-      source: "Philosophy of mind"
-      attribution: ["materialism"]
       controversy: 0.8
 
   # Additional level 4 arguments to complete dependencies
@@ -224,8 +122,7 @@ arguments:
     level: 4
     dependencies: ["objective_moral_knowledge_possible", "harm_prevention_matters"]
     activation_conditions:
-      required_arguments: ["objective_moral_knowledge_possible"]
-      required_axioms: ["suffering_exists"]
+      required_arguments: ["objective_moral_knowledge_possible", "harm_prevention_matters"]
     metadata:
       tags: ["consequentialism", "moral theory", "utilitarian ethics"]
       strength: 0.6
@@ -290,7 +187,6 @@ arguments:
     dependencies: ["global_cooperation_achievable"]
     activation_conditions:
       required_arguments: ["global_cooperation_achievable"]
-      required_axioms: ["cooperation_possible"]
     metadata:
       tags: ["global governance", "coordination problems", "institutional solutions"]
       strength: 0.8
@@ -354,7 +250,7 @@ arguments:
     level: 4
     dependencies: ["values_guide_choices"]
     activation_conditions:
-      required_axioms: ["choice_exists", "differences_matter"]
+      required_arguments: ["values_guide_choices"]
     metadata:
       tags: ["authenticity", "existentialism", "self-direction"]
       strength: 0.8

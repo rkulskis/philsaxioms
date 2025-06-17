@@ -24,7 +24,7 @@ dataLoader.onDataChange(() => {
 app.use(createRoutes(dataLoader));
 
 // Serve static frontend files from "public" directory
-const staticDir = path.join(__dirname, 'public');
+const staticDir = path.join(__dirname, '../public');
 if (fs.existsSync(staticDir)) {
   app.use(express.static(staticDir));
 
