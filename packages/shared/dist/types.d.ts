@@ -6,27 +6,24 @@ export interface AxiomCategory {
 }
 export interface NodeEdge {
     to: string;
-    type: 'supports';
     description: string;
 }
-export interface BaseNode {
+export interface Node {
     id: string;
     title: string;
     description: string;
     category: string;
     edges: NodeEdge[];
+    conclusion?: string;
     position?: {
         x: number;
         y: number;
     };
 }
-export interface Axiom extends BaseNode {
-    type: 'axiom';
-}
-export interface Argument extends BaseNode {
-    type: 'argument';
-    conclusion: string;
-}
+export declare const isAxiom: (node: Node) => boolean;
+export declare const isArgument: (node: Node) => boolean;
+export type Axiom = Node;
+export type Argument = Node;
 export interface UserSession {
     id: string;
     acceptedAxioms: string[];
@@ -70,7 +67,6 @@ export interface ValidationResult {
     orphanedArguments: string[];
     circularDependencies: string[];
 }
-export type Node = Axiom | Argument;
 export interface GraphData {
     nodes: Node[];
     categories: AxiomCategory[];

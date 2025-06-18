@@ -26,8 +26,8 @@ function createRoutes(dataLoader) {
     router.post('/api/nodes', response_handler_1.ResponseHandler.wrapAsyncRoute(async (req, res) => {
         const nodeData = req.body;
         // Validate required fields
-        if (!nodeData.id || !nodeData.title || !nodeData.description || !nodeData.type) {
-            return res.status(400).json({ error: 'Missing required fields: id, title, description, type' });
+        if (!nodeData.id || !nodeData.title || !nodeData.description) {
+            return res.status(400).json({ error: 'Missing required fields: id, title, description' });
         }
         // Check if node with this ID already exists
         const existingNode = await dataLoader.getNodeById(nodeData.id);
@@ -51,7 +51,7 @@ function createRoutes(dataLoader) {
     // Get specific argument by ID
     router.get('/api/arguments/:id', response_handler_1.ResponseHandler.createFindByIdRoute(async (id) => {
         const data = await dataLoader.loadGraphData();
-        const argument = data.nodes.find(node => node.id === id && node.type === 'argument');
+        const argument = data.nodes.find(node => node.id === id && node.edges.length > 0);
         return argument || null;
     }, 'Failed to load argument', 'Argument not found'));
     // Simple in-memory storage (replace with database in production)
@@ -106,7 +106,7 @@ function createRoutes(dataLoader) {
             }
             const data = await dataLoader.loadGraphData();
             const relevantAxioms = session.acceptedAxioms;
-            const relevantNodes = data.nodes.filter(node => node.type === 'axiom' && relevantAxioms.includes(node.id));
+            const relevantNodes = data.nodes.filter(node => node.edges.length === 0 && relevantAxioms.includes(node.id));
             const snapshot = {
                 id: (0, shared_1.generateSnapshotId)(),
                 title,

@@ -7,30 +7,29 @@ export interface AxiomCategory {
 
 export interface NodeEdge {
   to: string; // ID of the target node
-  type: 'supports';
   description: string;
 }
 
-export interface BaseNode {
+export interface Node {
   id: string;
   title: string;
   description: string;
   category: string;
   edges: NodeEdge[];
+  conclusion?: string; // Only present for arguments (nodes with edges)
   position?: {
     x: number;
     y: number;
   };
 }
 
-export interface Axiom extends BaseNode {
-  type: 'axiom';
-}
+// Type guards for checking node types
+export const isAxiom = (node: Node): boolean => node.edges.length === 0;
+export const isArgument = (node: Node): boolean => node.edges.length > 0;
 
-export interface Argument extends BaseNode {
-  type: 'argument';
-  conclusion: string;
-}
+// Legacy type aliases for compatibility
+export type Axiom = Node;
+export type Argument = Node;
 
 export interface UserSession {
   id: string;
@@ -76,7 +75,6 @@ export interface ValidationResult {
   circularDependencies: string[];
 }
 
-export type Node = Axiom | Argument;
 
 export interface GraphData {
   nodes: Node[];

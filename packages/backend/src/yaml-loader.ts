@@ -98,8 +98,16 @@ export class YamlDataLoader extends YamlLoaderBase {
       return this.questionnaireCache;
     }
 
-    const data = this.loadYamlFileWithNull<{ questionnaire: QuestionnaireItem[] }>('questionnaire.yaml');
-    this.questionnaireCache = data?.questionnaire || [];
+    // Generate questionnaire from nodes with empty edges (axioms)
+    const graphData = await this.loadGraphData();
+    const axiomNodes = graphData.nodes.filter(node => node.edges.length === 0);
+    
+    this.questionnaireCache = axiomNodes.map((node, index) => ({
+      id: `q${index + 1}`,
+      text: `Do you accept: ${node.title}?`,
+      axiomId: node.id,
+      category: node.category
+    }));
     
     return this.questionnaireCache;
   }
@@ -111,18 +119,18 @@ export class YamlDataLoader extends YamlLoaderBase {
 
   public async getAxiomById(id: string): Promise<Axiom | null> {
     const data = await this.loadGraphData();
-    const node = data.nodes.find(node => node.id === id && node.type === 'axiom');
+    const node = data.nodes.find(node => node.id === id && node.edges.length === 0);
     return node as Axiom || null;
   }
 
   public async getAxiomsByCategory(category: string): Promise<Axiom[]> {
     const data = await this.loadGraphData();
-    return data.nodes.filter(node => node.type === 'axiom' && node.category === category) as Axiom[];
+    return data.nodes.filter(node => node.edges.length === 0 && node.category === category) as Axiom[];
   }
 
-  public async getConnectedNodes(nodeId: string): Promise<{ node: Node; type: 'supports'; direction: 'incoming' | 'outgoing' }[]> {
+  public async getConnectedNodes(nodeId: string): Promise<{ node: Node; direction: 'incoming' | 'outgoing' }[]> {
     const data = await this.loadGraphData();
-    const connections: { node: Node; type: 'supports'; direction: 'incoming' | 'outgoing' }[] = [];
+    const connections: { node: Node; direction: 'incoming' | 'outgoing' }[] = [];
 
     // Find outgoing connections (this node's edges)
     const sourceNode = data.nodes.find(node => node.id === nodeId);
@@ -132,7 +140,6 @@ export class YamlDataLoader extends YamlLoaderBase {
         if (targetNode) {
           connections.push({ 
             node: targetNode, 
-            type: edge.type, 
             direction: 'outgoing' 
           });
         }
@@ -145,7 +152,6 @@ export class YamlDataLoader extends YamlLoaderBase {
         if (edge.to === nodeId) {
           connections.push({ 
             node, 
-            type: edge.type, 
             direction: 'incoming' 
           });
         }

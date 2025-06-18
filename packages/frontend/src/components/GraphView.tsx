@@ -14,6 +14,9 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import { Save, Eye, EyeOff, Home, Edit } from 'lucide-react';
 import { Node, Axiom, Argument, AxiomCategory, UserSession } from '@philsaxioms/shared';
+
+// Type guards for checking node types
+const isAxiom = (node: Node): boolean => node.edges.length === 0;
 import { ArgumentValidator } from '../utils/argument-validator';
 import PhilNode from './Node';
 import PhilEdge from './Edge';
@@ -41,7 +44,7 @@ interface GraphViewProps {
 }
 
 const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session, onSessionUpdate }: GraphViewProps) {
-  const [selectedNode, setSelectedNode] = useState<{node: Axiom | Argument, type: 'axiom' | 'argument'} | null>(null);
+  const [selectedNode, setSelectedNode] = useState<{node: Node, type: 'axiom' | 'argument'} | null>(null);
   const [showSnapshotModal, setShowSnapshotModal] = useState(false);
   const [snapshotTitle, setSnapshotTitle] = useState('');
   const [snapshotDescription, setSnapshotDescription] = useState('');
@@ -57,7 +60,7 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
     description: '',
     conclusion: '',
     category: 'metaphysics',
-    edges: [] as { to: string; type: 'supports'; description: string }[],
+    edges: [] as { to: string; description: string }[],
     position: { x: 0, y: 0 }
   });
 
@@ -74,15 +77,15 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
   // const axioms = nodes.filter(node => node.type === 'axiom') as Axiom[];
   // const argumentNodes = nodes.filter(node => node.type === 'argument') as Argument[];
 
-  // Function to find arguments that build upon this node (have "supports" edges pointing to this node)
+  // Function to find arguments that build upon this node (have edges pointing to this node)
   const getArgumentsBuiltUponThis = (nodeId: string): Array<{node: Node, type: 'axiom' | 'argument'}> => {
     const dependents: Array<{node: Node, type: 'axiom' | 'argument'}> = [];
     
-    // Find nodes that have edges pointing to this nodeId with type 'supports' (meaning they build upon this node)
+    // Find nodes that have edges pointing to this nodeId (meaning they build upon this node)
     for (const node of nodes) {
       for (const edge of node.edges) {
-        if (edge.to === nodeId && edge.type === 'supports') {
-          dependents.push({ node, type: node.type });
+        if (edge.to === nodeId) {
+          dependents.push({ node, type: isAxiom(node) ? 'axiom' : 'argument' });
         }
       }
     }
@@ -101,18 +104,16 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
     if (!currentNode) return [];
     
     // If this is an axiom, return it
-    if (currentNode.type === 'axiom') {
+    if (isAxiom(currentNode)) {
       dependencyAxioms.add(currentNode as Axiom);
       return Array.from(dependencyAxioms);
     }
     
     // For arguments, find all dependency nodes recursively
     for (const edge of currentNode.edges) {
-      if (edge.type === 'supports') {
-        // "supports" edges mean this node builds upon the target
-        const childAxioms = getDependencyAxioms(edge.to, visited);
-        childAxioms.forEach(ax => dependencyAxioms.add(ax));
-      }
+      // Edges mean this node builds upon the target
+      const childAxioms = getDependencyAxioms(edge.to, visited);
+      childAxioms.forEach(ax => dependencyAxioms.add(ax));
     }
     
     return Array.from(dependencyAxioms);
@@ -147,7 +148,7 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
       const category = getCategoryById(node.category);
       const layoutNode = layout.get(node.id);
       
-      if (node.type === 'axiom') {
+      if (isAxiom(node)) {
         const isAccepted = debouncedSession.acceptedAxioms.includes(node.id);
         const isRejected = debouncedSession.rejectedAxioms.includes(node.id);
         
@@ -218,8 +219,8 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
             targetHandle: 'target',
             type: 'custom',
             data: {
-              relation: { type: edge.type },
-              label: edge.type,
+              relation: { type: 'supports' },
+              label: 'supports',
               edgeIndex: 0,
               totalEdges: 1,
               description: edge.description,
@@ -301,7 +302,7 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
         const nodeData = nodes.find(n => n.id === nodeToDelete.id);
         console.log('Attempting to delete node:', nodeData);
         
-        if (nodeData && confirm(`Are you sure you want to delete ${nodeData.type} #${nodeData.id}: "${nodeData.title}"?`)) {
+        if (nodeData && confirm(`Are you sure you want to delete ${isAxiom(nodeData) ? 'axiom' : 'argument'} #${nodeData.id}: "${nodeData.title}"?`)) {
           try {
             await apiClient.deleteNode(nodeData.id);
             window.location.reload();
@@ -420,11 +421,8 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
         <MiniMap 
           className="bg-white border border-gray-200 rounded-lg shadow-lg"
           nodeColor={(node) => {
-            // Handle both axiom and argument nodes
-            const categoryId = node.data.axiom?.category || node.data.argument?.category;
-            if (!categoryId) return '#6B7280';
-            
-            const category = getCategoryById(categoryId);
+            // Get category from node data
+            const category = node.data.category;
             return category?.color || '#6B7280';
           }}
         />
@@ -659,50 +657,54 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
           </div>
           
           <div className="space-y-4">
-            <div className="space-y-2">
-              <h4 className="text-sm font-medium text-gray-700">Create Nodes</h4>
-              <p className="text-sm text-gray-600 bg-purple-50 p-3 rounded-lg border border-purple-200">
-                💡 Click anywhere on the background to create a new node at that position
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <h4 className="text-sm font-medium text-gray-700">Delete Nodes</h4>
-              <div className="max-h-32 overflow-auto space-y-1">
-                {nodes.map(node => (
-                  <div key={node.id} className="flex items-center justify-between p-2 bg-gray-50 rounded text-xs">
-                    <span className="flex items-center gap-2">
-                      <span className={`px-1 py-0.5 rounded ${node.type === 'axiom' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
-                        #{node.id}
-                      </span>
-                      <span className="truncate max-w-32">{node.title}</span>
-                    </span>
-                    <button
-                      onClick={async () => {
-                        if (confirm(`Delete ${node.type} #${node.id}: "${node.title}"?`)) {
-                          try {
-                            await apiClient.deleteNode(node.id);
-                            window.location.reload();
-                          } catch (error) {
-                            console.error('Failed to delete node:', error);
-                            alert('Failed to delete node: ' + (error instanceof Error ? error.message : 'Unknown error'));
-                          }
-                        }
-                      }}
-                      className="px-2 py-1 text-red-600 hover:bg-red-50 rounded"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
+            {/* Quick Help */}
+            <div className="bg-purple-50 p-3 rounded-lg border border-purple-200">
+              <h4 className="text-sm font-medium text-purple-800 mb-2">Editor Keyboard Shortcuts</h4>
+              <div className="space-y-1 text-xs text-purple-700">
+                <div>📍 <strong>Click background</strong> - Create node</div>
+                <div>🔗 <strong>Drag handles</strong> - Create edge</div>
+                <div>🗑️ <strong>Select + DELETE</strong> - Delete item</div>
+                <div>📝 <strong>Click node</strong> - View/edit details</div>
+                <div>🔒 <strong>ESC</strong> - Close dialogs</div>
               </div>
             </div>
-
+            
+            {/* Node List with Edit Options */}
+            <div className="space-y-2">
+              <h4 className="text-sm font-medium text-gray-700">Nodes ({nodes.length})</h4>
+              <div className="max-h-64 overflow-auto space-y-1 border border-gray-200 rounded-lg p-2">
+                {nodes.map(node => {
+                  const category = getCategoryById(node.category);
+                  return (
+                    <div 
+                      key={node.id} 
+                      className="flex items-center justify-between p-2 bg-white rounded border border-gray-100 hover:bg-gray-50 cursor-pointer"
+                      onClick={() => setSelectedNode({ node, type: isAxiom(node) ? 'axiom' : 'argument' })}
+                    >
+                      <span className="flex items-center gap-2 flex-1">
+                        <span 
+                          className="w-2 h-2 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: category?.color || '#gray' }}
+                        />
+                        <span className="text-xs font-medium text-gray-700">#{node.id}</span>
+                        <span className="text-xs text-gray-600 truncate">{node.title}</span>
+                      </span>
+                      <span className={`text-xs px-1.5 py-0.5 rounded ${
+                        isAxiom(node) ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
+                      }`}>
+                        {isAxiom(node) ? 'axiom' : 'argument'}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            
             <button
               onClick={() => setShowEditPanel(false)}
               className="w-full text-center px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded transition-colors"
             >
-              Close Editor
+              Close Editor (ESC)
             </button>
           </div>
         </div>
@@ -824,7 +826,7 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
                     onClick={() => {
                       setNodeFormData(prev => ({
                         ...prev,
-                        edges: [...prev.edges, { to: '', type: 'supports', description: '' }]
+                        edges: [...prev.edges, { to: '', description: '' }]
                       }));
                     }}
                     className="w-full px-3 py-2 text-sm border border-dashed border-gray-300 rounded hover:bg-gray-50"
@@ -846,27 +848,20 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
                     
                     let newNode: Node & { position?: { x: number; y: number } };
                     
-                    if (isArgument) {
-                      newNode = {
-                        id: nodeFormData.id,
-                        type: 'argument',
-                        title: nodeFormData.title,
-                        description: nodeFormData.description,
-                        conclusion: nodeFormData.conclusion || 'Auto-generated argument',
-                        category: nodeFormData.category,
-                        edges: nodeFormData.edges.filter(edge => edge.to && edge.type),
-                        position: nodeFormData.position
-                      } as Argument & { position: { x: number; y: number } };
-                    } else {
-                      newNode = {
-                        id: nodeFormData.id,
-                        type: 'axiom',
-                        title: nodeFormData.title,
-                        description: nodeFormData.description,
-                        category: nodeFormData.category,
-                        edges: nodeFormData.edges.filter(edge => edge.to && edge.type),
-                        position: nodeFormData.position
-                      } as Axiom & { position: { x: number; y: number } };
+                    newNode = {
+                      id: nodeFormData.id,
+                      title: nodeFormData.title,
+                      description: nodeFormData.description,
+                      category: nodeFormData.category,
+                      edges: nodeFormData.edges.filter(edge => edge.to && edge.to.trim()),
+                      position: nodeFormData.position
+                    } as Node & { position: { x: number; y: number } };
+                    
+                    // Add conclusion if it's an argument (has edges or explicit conclusion)
+                    if (isArgument && nodeFormData.conclusion) {
+                      newNode.conclusion = nodeFormData.conclusion;
+                    } else if (isArgument && !nodeFormData.conclusion) {
+                      newNode.conclusion = 'Auto-generated argument';
                     }
 
                     // Clean up edge targets (remove # prefix if present)

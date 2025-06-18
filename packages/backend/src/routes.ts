@@ -42,8 +42,8 @@ export function createRoutes(dataLoader: YamlDataLoader): Router {
     const nodeData = req.body as Node;
     
     // Validate required fields
-    if (!nodeData.id || !nodeData.title || !nodeData.description || !nodeData.type) {
-      return res.status(400).json({ error: 'Missing required fields: id, title, description, type' });
+    if (!nodeData.id || !nodeData.title || !nodeData.description) {
+      return res.status(400).json({ error: 'Missing required fields: id, title, description' });
     }
 
     // Check if node with this ID already exists
@@ -74,7 +74,7 @@ export function createRoutes(dataLoader: YamlDataLoader): Router {
   router.get('/api/arguments/:id', ResponseHandler.createFindByIdRoute(
     async (id: string) => {
       const data = await dataLoader.loadGraphData();
-      const argument = data.nodes.find(node => node.id === id && node.type === 'argument');
+      const argument = data.nodes.find(node => node.id === id && node.edges.length > 0);
       return argument || null;
     },
     'Failed to load argument',
@@ -143,7 +143,7 @@ export function createRoutes(dataLoader: YamlDataLoader): Router {
       const data = await dataLoader.loadGraphData();
       const relevantAxioms = session.acceptedAxioms;
       const relevantNodes = data.nodes.filter(node => 
-        node.type === 'axiom' && relevantAxioms.includes(node.id)
+        node.edges.length === 0 && relevantAxioms.includes(node.id)
       );
 
       const snapshot = {

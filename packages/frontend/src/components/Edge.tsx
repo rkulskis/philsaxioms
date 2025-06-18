@@ -85,7 +85,7 @@ export default function Edge({
   const style = data?.relation ? getEdgeStyle(data.relation) : { stroke: '#6B7280', strokeWidth: 1 };
   
   // Calculate path with spacing for multiple edges
-  const [edgePath, labelX, labelY] = calculateSpacedPath(
+  const [edgePath] = calculateSpacedPath(
     sourceX,
     sourceY,
     targetX,

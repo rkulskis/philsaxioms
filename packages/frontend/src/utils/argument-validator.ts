@@ -1,5 +1,9 @@
 import { Node, Argument } from '@philsaxioms/shared';
 
+// Type guards for checking node types
+const isAxiom = (node: Node): boolean => node.edges.length === 0;
+const isArgument = (node: Node): boolean => node.edges.length > 0;
+
 export interface ValidationContext {
   acceptedAxioms: Set<string>;
   validArguments: Set<string>;
@@ -19,9 +23,8 @@ export class ArgumentValidator {
     if (visited.has(argument.id)) return false; // Prevent circular dependencies
     visited.add(argument.id);
     
-    // Find nodes that this argument depends on (edges with "supports" mean "builds upon")
+    // Find nodes that this argument depends on
     const dependencyNodes = argument.edges
-      .filter(edge => edge.type === 'supports')
       .map(edge => context.allNodes.find(node => node.id === edge.to))
       .filter(node => node !== undefined);
     
@@ -32,7 +35,7 @@ export class ArgumentValidator {
     
     // Check if all dependency nodes are valid/accepted
     for (const dependencyNode of dependencyNodes) {
-      if (dependencyNode!.type === 'axiom') {
+      if (isAxiom(dependencyNode!)) {
         // Dependency axiom: check if axiom is accepted
         if (!context.acceptedAxioms.has(dependencyNode!.id)) {
           return false;
@@ -63,7 +66,7 @@ export class ArgumentValidator {
       allNodes,
     };
 
-    const argumentNodes = allNodes.filter(node => node.type === 'argument') as Argument[];
+    const argumentNodes = allNodes.filter(node => isArgument(node)) as Argument[];
 
     // Iteratively add arguments whose supporting conditions are met
     let changed = true;

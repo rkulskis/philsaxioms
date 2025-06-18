@@ -1,5 +1,9 @@
 import { Node } from '@philsaxioms/shared';
 
+// Type guards for checking node types
+const isAxiom = (node: Node): boolean => node.edges.length === 0;
+const isArgument = (node: Node): boolean => node.edges.length > 0;
+
 export interface LayoutNode {
   id: string;
   type: 'axiom' | 'argument';
@@ -15,7 +19,7 @@ function calculateLevelsBFS(nodes: Node[]): Map<string, number> {
   
   // Level 0: All axioms
   for (const node of nodes) {
-    if (node.type === 'axiom') {
+    if (isAxiom(node)) {
       levels.set(node.id, 0);
     }
   }
@@ -26,21 +30,19 @@ function calculateLevelsBFS(nodes: Node[]): Map<string, number> {
     changed = false;
     
     for (const node of nodes) {
-      if (node.type === 'argument' && !levels.has(node.id)) {
+      if (isArgument(node) && !levels.has(node.id)) {
         // Check if all dependencies have levels assigned
         let maxDependencyLevel = -1;
         let allDependenciesResolved = true;
         
         for (const edge of node.edges) {
-          if (edge.type === 'supports') {
-            // "supports" edges represent dependencies (what this node builds upon)
-            const dependencyLevel = levels.get(edge.to);
-            if (dependencyLevel === undefined) {
-              allDependenciesResolved = false;
-              break;
-            }
-            maxDependencyLevel = Math.max(maxDependencyLevel, dependencyLevel);
+          // Edges represent dependencies (what this node builds upon)
+          const dependencyLevel = levels.get(edge.to);
+          if (dependencyLevel === undefined) {
+            allDependenciesResolved = false;
+            break;
           }
+          maxDependencyLevel = Math.max(maxDependencyLevel, dependencyLevel);
         }
         
         // If all dependencies are resolved, assign level
@@ -55,7 +57,7 @@ function calculateLevelsBFS(nodes: Node[]): Map<string, number> {
   
   // Ensure all arguments have a level (in case some have no dependencies or circular deps)
   for (const node of nodes) {
-    if (node.type === 'argument' && !levels.has(node.id)) {
+    if (isArgument(node) && !levels.has(node.id)) {
       levels.set(node.id, 1); // Default to level 1 for disconnected arguments
     }
   }
@@ -88,11 +90,11 @@ export function calculateHierarchicalLayout(nodes: Node[]): Map<string, LayoutNo
   
   // Add all nodes by their calculated levels
   for (const node of nodes) {
-    const level = nodeLevels.get(node.id) || (node.type === 'axiom' ? 0 : 1);
+    const level = nodeLevels.get(node.id) || (isAxiom(node) ? 0 : 1);
     if (!nodesByLevel.has(level)) {
       nodesByLevel.set(level, []);
     }
-    nodesByLevel.get(level)!.push({ id: node.id, type: node.type, item: node });
+    nodesByLevel.get(level)!.push({ id: node.id, type: isAxiom(node) ? 'axiom' : 'argument', item: node });
   }
 
   // Calculate positions for each level

@@ -1,4 +1,4 @@
-import { Node, Argument, Axiom } from '../types';
+import { Node, Argument, Axiom, isAxiom, isArgument } from '../types';
 
 export interface ValidationContext {
   acceptedAxioms: Set<string>;
@@ -20,7 +20,6 @@ export class ArgumentValidator {
     
     // Find nodes that this argument supports (builds upon)
     const supportedNodes = argument.edges
-      .filter(edge => edge.type === 'supports')
       .map(edge => context.allNodes.find(node => node.id === edge.to))
       .filter(node => node !== undefined);
     
@@ -31,7 +30,7 @@ export class ArgumentValidator {
     
     // Check if all supported nodes are valid/accepted
     for (const supportedNode of supportedNodes) {
-      if (supportedNode!.type === 'axiom') {
+      if (isAxiom(supportedNode!)) {
         // Supported axiom: check if axiom is accepted
         if (!context.acceptedAxioms.has(supportedNode!.id)) {
           return false;
@@ -62,7 +61,7 @@ export class ArgumentValidator {
       allNodes,
     };
 
-    const argumentNodes = allNodes.filter(node => node.type === 'argument') as Argument[];
+    const argumentNodes = allNodes.filter(node => isArgument(node)) as Argument[];
 
     // Iteratively add arguments whose supporting conditions are met
     let changed = true;

@@ -119,8 +119,15 @@ class YamlDataLoader extends shared_1.YamlLoaderBase {
         if (this.questionnaireCache) {
             return this.questionnaireCache;
         }
-        const data = this.loadYamlFileWithNull('questionnaire.yaml');
-        this.questionnaireCache = data?.questionnaire || [];
+        // Generate questionnaire from nodes with empty edges (axioms)
+        const graphData = await this.loadGraphData();
+        const axiomNodes = graphData.nodes.filter(node => node.edges.length === 0);
+        this.questionnaireCache = axiomNodes.map((node, index) => ({
+            id: `q${index + 1}`,
+            text: `Do you accept: ${node.title}?`,
+            axiomId: node.id,
+            category: node.category
+        }));
         return this.questionnaireCache;
     }
     async getNodeById(id) {
@@ -129,12 +136,12 @@ class YamlDataLoader extends shared_1.YamlLoaderBase {
     }
     async getAxiomById(id) {
         const data = await this.loadGraphData();
-        const node = data.nodes.find(node => node.id === id && node.type === 'axiom');
+        const node = data.nodes.find(node => node.id === id && node.edges.length === 0);
         return node || null;
     }
     async getAxiomsByCategory(category) {
         const data = await this.loadGraphData();
-        return data.nodes.filter(node => node.type === 'axiom' && node.category === category);
+        return data.nodes.filter(node => node.edges.length === 0 && node.category === category);
     }
     async getConnectedNodes(nodeId) {
         const data = await this.loadGraphData();
@@ -147,7 +154,6 @@ class YamlDataLoader extends shared_1.YamlLoaderBase {
                 if (targetNode) {
                     connections.push({
                         node: targetNode,
-                        type: edge.type,
                         direction: 'outgoing'
                     });
                 }
@@ -159,7 +165,6 @@ class YamlDataLoader extends shared_1.YamlLoaderBase {
                 if (edge.to === nodeId) {
                     connections.push({
                         node,
-                        type: edge.type,
                         direction: 'incoming'
                     });
                 }

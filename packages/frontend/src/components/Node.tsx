@@ -49,13 +49,21 @@ const getNodeStatus = (data: NodeData) => {
 };
 
 const getNodeColors = (data: NodeData, status: string) => {
+  const isSelected = data.isSelected;
+  
   if (data.type === 'axiom') {
+    if (isSelected) {
+      return 'border-purple-600 bg-purple-50 border-4 shadow-xl';
+    }
     switch (status) {
       case 'accepted': return 'border-blue-500 bg-blue-50 border-4';
       case 'rejected': return 'border-red-400 bg-red-50 border-2 opacity-60';
       default: return 'border-gray-300 border-2';
     }
   } else {
+    if (isSelected) {
+      return 'border-purple-600 bg-purple-50 border-4 shadow-xl';
+    }
     return status === 'valid' ? 'border-green-400 bg-green-50' : 'border-gray-300 bg-gray-50';
   }
 };
@@ -232,10 +240,10 @@ export default memo(function Node({ data }: NodeProps) {
         'relative p-4 rounded-lg shadow-lg cursor-pointer transition-all duration-200 border-2',
         nodeColors,
         {
-          'ring-4 ring-blue-400 ring-opacity-50': isSelected,
           'axiom-node': isAxiom,
           'min-w-[200px] max-w-[280px]': isAxiom,
           'min-w-[240px] max-w-[320px]': isArgument,
+          'transform scale-105': isSelected,
         }
       )}
       style={{
@@ -293,7 +301,7 @@ export default memo(function Node({ data }: NodeProps) {
         {/* Argument-specific content */}
         {isArgument && (
           <>
-            <ArgumentConclusion conclusion={(data.node as Argument).conclusion} />
+            <ArgumentConclusion conclusion={(data.node as Argument).conclusion || ''} />
             
             {/* Strength indicator removed in new format */}
           </>
