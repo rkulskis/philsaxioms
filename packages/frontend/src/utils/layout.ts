@@ -1,4 +1,4 @@
-import { Axiom, Argument, Edge } from '@philsaxioms/shared';
+import { Node } from '@philsaxioms/shared';
 
 export interface LayoutNode {
   id: string;
@@ -10,12 +10,64 @@ export interface LayoutNode {
   height: number;
 }
 
-export function calculateHierarchicalLayout(
-  axioms: Axiom[], 
-  argumentNodes: Argument[], 
-  _edges: Edge[]
-): Map<string, LayoutNode> {
+function calculateLevelsBFS(nodes: Node[]): Map<string, number> {
+  const levels = new Map<string, number>();
+  
+  // Level 0: All axioms
+  for (const node of nodes) {
+    if (node.type === 'axiom') {
+      levels.set(node.id, 0);
+    }
+  }
+  
+  // Calculate levels for arguments based on their dependencies
+  let changed = true;
+  while (changed) {
+    changed = false;
+    
+    for (const node of nodes) {
+      if (node.type === 'argument' && !levels.has(node.id)) {
+        // Check if all dependencies have levels assigned
+        let maxDependencyLevel = -1;
+        let allDependenciesResolved = true;
+        
+        for (const edge of node.edges) {
+          if (edge.type === 'supports') {
+            // "supports" edges represent dependencies (what this node builds upon)
+            const dependencyLevel = levels.get(edge.to);
+            if (dependencyLevel === undefined) {
+              allDependenciesResolved = false;
+              break;
+            }
+            maxDependencyLevel = Math.max(maxDependencyLevel, dependencyLevel);
+          }
+        }
+        
+        // If all dependencies are resolved, assign level
+        if (allDependenciesResolved) {
+          const newLevel = maxDependencyLevel + 1;
+          levels.set(node.id, newLevel);
+          changed = true;
+        }
+      }
+    }
+  }
+  
+  // Ensure all arguments have a level (in case some have no dependencies or circular deps)
+  for (const node of nodes) {
+    if (node.type === 'argument' && !levels.has(node.id)) {
+      levels.set(node.id, 1); // Default to level 1 for disconnected arguments
+    }
+  }
+  
+  return levels;
+}
+
+export function calculateHierarchicalLayout(nodes: Node[]): Map<string, LayoutNode> {
   const layout = new Map<string, LayoutNode>();
+  
+  console.log('DEBUG layout: input nodes:', nodes.length);
+  console.log('DEBUG layout: nodes sample:', nodes.slice(0, 2));
   
   // Constants for layout - maximized spacing for clear arrow visibility
   const LEVEL_HEIGHT = 500;
@@ -24,19 +76,23 @@ export function calculateHierarchicalLayout(
   const HORIZONTAL_SPACING = 150;
   const VERTICAL_OFFSET = 200;
 
-  // Get max argument level
-  const maxLevel = Math.max(...argumentNodes.map(arg => arg.level), 0);
+  // Calculate levels using BFS
+  const nodeLevels = calculateLevelsBFS(nodes);
+  console.log('DEBUG layout: nodeLevels:', Object.fromEntries(nodeLevels));
+  const levelValues = Array.from(nodeLevels.values());
+  const maxLevel = levelValues.length > 0 ? Math.max(...levelValues) : 0;
+  console.log('DEBUG layout: maxLevel:', maxLevel);
   
   // Group nodes by level
-  const nodesByLevel = new Map<number, Array<{id: string, type: 'axiom' | 'argument', item: Axiom | Argument}>>();
+  const nodesByLevel = new Map<number, Array<{id: string, type: 'axiom' | 'argument', item: Node}>>();
   
-  // Level 0: Axioms
-  nodesByLevel.set(0, axioms.map(axiom => ({ id: axiom.id, type: 'axiom' as const, item: axiom })));
-  
-  // Higher levels: Arguments
-  for (let level = 1; level <= maxLevel; level++) {
-    const levelArguments = argumentNodes.filter(arg => arg.level === level);
-    nodesByLevel.set(level, levelArguments.map(arg => ({ id: arg.id, type: 'argument' as const, item: arg })));
+  // Add all nodes by their calculated levels
+  for (const node of nodes) {
+    const level = nodeLevels.get(node.id) || (node.type === 'axiom' ? 0 : 1);
+    if (!nodesByLevel.has(level)) {
+      nodesByLevel.set(level, []);
+    }
+    nodesByLevel.get(level)!.push({ id: node.id, type: node.type, item: node });
   }
 
   // Calculate positions for each level
@@ -61,6 +117,8 @@ export function calculateHierarchicalLayout(
     });
   }
 
+  console.log('DEBUG layout: final layout size:', layout.size);
+  console.log('DEBUG layout: layout sample:', layout.get('1'));
   return layout;
 }
 

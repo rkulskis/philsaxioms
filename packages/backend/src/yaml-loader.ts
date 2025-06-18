@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import YAML from 'yaml';
 import chokidar from 'chokidar';
-import { Axiom, Argument, Edge, AxiomCategory, QuestionnaireItem, GraphData, YamlLoaderBase } from '@philsaxioms/shared';
+import { Node, Axiom, Argument, AxiomCategory, QuestionnaireItem, GraphData, YamlLoaderBase } from '@philsaxioms/shared';
 
 export class YamlDataLoader extends YamlLoaderBase {
   private cache: GraphData | null = null;
@@ -81,18 +81,14 @@ export class YamlDataLoader extends YamlLoaderBase {
     console.log('Loading graph data from YAML files...');
 
     const categories = this.loadYamlFileWithNull<{ categories: AxiomCategory[] }>('categories.yaml')?.categories || [];
-    const axioms = this.loadYamlFiles<Axiom>('axioms/*', 'axioms');
-    const argumentNodes = this.loadYamlFiles<Argument>('arguments/*', 'arguments');
-    const edges = this.loadYamlFiles<Edge>('edges/*', 'edges');
+    const nodesData = this.loadYamlFileWithNull<{ nodes: Node[] }>('nodes.yaml')?.nodes || [];
 
     this.cache = {
       categories,
-      axioms,
-      arguments: argumentNodes,
-      edges
+      nodes: nodesData
     };
 
-    console.log(`Loaded ${axioms.length} axioms, ${argumentNodes.length} arguments, ${edges.length} edges, ${categories.length} categories`);
+    console.log(`Loaded ${nodesData.length} nodes, ${categories.length} categories`);
     
     return this.cache;
   }
@@ -108,50 +104,92 @@ export class YamlDataLoader extends YamlLoaderBase {
     return this.questionnaireCache;
   }
 
+  public async getNodeById(id: string): Promise<Node | null> {
+    const data = await this.loadGraphData();
+    return data.nodes.find(node => node.id === id) || null;
+  }
+
   public async getAxiomById(id: string): Promise<Axiom | null> {
     const data = await this.loadGraphData();
-    return data.axioms.find(axiom => axiom.id === id) || null;
+    const node = data.nodes.find(node => node.id === id && node.type === 'axiom');
+    return node as Axiom || null;
   }
 
   public async getAxiomsByCategory(category: string): Promise<Axiom[]> {
     const data = await this.loadGraphData();
-    return data.axioms.filter(axiom => axiom.category === category);
+    return data.nodes.filter(node => node.type === 'axiom' && node.category === category) as Axiom[];
   }
 
-  public async getConnectedNodes(nodeId: string): Promise<{ node: Axiom | Argument; nodeType: 'axiom' | 'argument'; edge: Edge; direction: 'incoming' | 'outgoing' }[]> {
+  public async getConnectedNodes(nodeId: string): Promise<{ node: Node; type: 'supports'; direction: 'incoming' | 'outgoing' }[]> {
     const data = await this.loadGraphData();
-    const connections: { node: Axiom | Argument; nodeType: 'axiom' | 'argument'; edge: Edge; direction: 'incoming' | 'outgoing' }[] = [];
+    const connections: { node: Node; type: 'supports'; direction: 'incoming' | 'outgoing' }[] = [];
 
-    for (const edge of data.edges) {
-      let connectedNodeId: string | null = null;
-      let connectedNodeType: 'axiom' | 'argument' | null = null;
-      let direction: 'incoming' | 'outgoing' | null = null;
-
-      if (edge.fromNode === nodeId) {
-        connectedNodeId = edge.toNode;
-        connectedNodeType = edge.toType;
-        direction = 'outgoing';
-      } else if (edge.toNode === nodeId) {
-        connectedNodeId = edge.fromNode;
-        connectedNodeType = edge.fromType;
-        direction = 'incoming';
-      }
-
-      if (connectedNodeId && connectedNodeType && direction) {
-        let node: Axiom | Argument | undefined;
-        if (connectedNodeType === 'axiom') {
-          node = data.axioms.find(a => a.id === connectedNodeId);
-        } else {
-          node = data.arguments.find(a => a.id === connectedNodeId);
+    // Find outgoing connections (this node's edges)
+    const sourceNode = data.nodes.find(node => node.id === nodeId);
+    if (sourceNode) {
+      for (const edge of sourceNode.edges) {
+        const targetNode = data.nodes.find(node => node.id === edge.to);
+        if (targetNode) {
+          connections.push({ 
+            node: targetNode, 
+            type: edge.type, 
+            direction: 'outgoing' 
+          });
         }
-        
-        if (node) {
-          connections.push({ node, nodeType: connectedNodeType, edge, direction });
+      }
+    }
+
+    // Find incoming connections (edges pointing to this node)
+    for (const node of data.nodes) {
+      for (const edge of node.edges) {
+        if (edge.to === nodeId) {
+          connections.push({ 
+            node, 
+            type: edge.type, 
+            direction: 'incoming' 
+          });
         }
       }
     }
 
     return connections;
+  }
+
+  public async addNode(node: Node): Promise<void> {
+    // Load existing nodes
+    const nodesData = this.loadYamlFileWithNull<{ nodes: Node[] }>('nodes.yaml')?.nodes || [];
+    
+    // Add the new node
+    nodesData.push(node);
+    
+    // Write back to file
+    const yamlContent = YAML.stringify({ nodes: nodesData });
+    const filePath = this.getDataPath('nodes.yaml');
+    fs.writeFileSync(filePath, yamlContent, 'utf8');
+    
+    // Invalidate cache
+    this.invalidateCache();
+  }
+
+  public async deleteNode(nodeId: string): Promise<void> {
+    // Load existing nodes
+    const nodesData = this.loadYamlFileWithNull<{ nodes: Node[] }>('nodes.yaml')?.nodes || [];
+    
+    // Remove the node and any edges pointing to it
+    const filteredNodes = nodesData
+      .filter(node => node.id !== nodeId)
+      .map(node => ({
+        ...node,
+        edges: node.edges.filter(edge => edge.to !== nodeId)
+      }));
+    
+    // Write back to file
+    const yamlContent = YAML.stringify({ nodes: filteredNodes });
+    const filePath = this.getDataPath('nodes.yaml');
+    fs.writeFileSync(filePath, yamlContent, 'utf8');
+    
+    // Invalidate cache
+    this.invalidateCache();
   }
 
   public close() {

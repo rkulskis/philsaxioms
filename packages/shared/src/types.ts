@@ -5,72 +5,31 @@ export interface AxiomCategory {
   description?: string;
 }
 
-export interface ActivationConditions {
-  required_axioms?: string[];
-  forbidden_axioms?: string[];
-  required_arguments?: string[];
-  forbidden_arguments?: string[];
+export interface NodeEdge {
+  to: string; // ID of the target node
+  type: 'supports';
+  description: string;
 }
 
-export interface Axiom {
+export interface BaseNode {
   id: string;
   title: string;
   description: string;
   category: string;
+  edges: NodeEdge[];
   position?: {
     x: number;
     y: number;
   };
-  metadata?: {
-    difficulty?: 'basic' | 'intermediate' | 'advanced';
-    source?: string;
-    attribution?: string[];
-    tags?: string[];
-    acceptability?: number; // 0-1, how widely accepted this axiom is
-  };
 }
 
-export interface Argument {
-  id: string;
-  title: string;
-  description: string;
+export interface Axiom extends BaseNode {
+  type: 'axiom';
+}
+
+export interface Argument extends BaseNode {
+  type: 'argument';
   conclusion: string;
-  category: string;
-  level: number; // Higher level = more complex, depends on lower level arguments/axioms
-  position?: {
-    x: number;
-    y: number;
-  };
-  dependencies?: string[]; // axiom or argument IDs this depends on
-  activation_conditions?: ActivationConditions;
-  metadata?: {
-    difficulty?: 'basic' | 'intermediate' | 'advanced';
-    source?: string;
-    attribution?: string[];
-    tags?: string[];
-    strength?: number; // 0-1, how convincing the argument is
-    controversy?: number; // 0-1, how disputed this argument is
-  };
-}
-
-export interface LogicalRelation {
-  type: 'implies' | 'contradicts' | 'supports' | 'requires' | 'assumes';
-  strength: number; // 0-1, how strong the logical connection is
-  bidirectional?: boolean;
-}
-
-export interface Edge {
-  id: string;
-  fromNode: string; // Can be axiom or argument ID
-  toNode: string;   // Can be axiom or argument ID
-  fromType: 'axiom' | 'argument';
-  toType: 'axiom' | 'argument';
-  relation: LogicalRelation;
-  explanation: string;
-  metadata?: {
-    difficulty?: 'basic' | 'intermediate' | 'advanced';
-    source?: string;
-  };
 }
 
 export interface UserSession {
@@ -117,18 +76,16 @@ export interface ValidationResult {
   circularDependencies: string[];
 }
 
+export type Node = Axiom | Argument;
+
 export interface GraphData {
-  axioms: Axiom[];
-  arguments: Argument[];
-  edges: Edge[];
+  nodes: Node[];
   categories: AxiomCategory[];
-  sources?: Source[];
-  validation?: ValidationResult;
 }
 
 export interface QuestionnaireItem {
+  id: string;
+  text: string;
   axiomId: string;
-  question: string;
-  explanation?: string;
   category: string;
 }

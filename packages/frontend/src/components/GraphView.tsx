@@ -1,7 +1,7 @@
-import { useCallback, useMemo, useState, useEffect } from 'react';
+import { useCallback, useMemo, useState, useEffect, memo } from 'react';
 import ReactFlow, {
-  Node,
-  Edge,
+  Node as FlowNode,
+  Edge as FlowEdge,
   addEdge,
   Connection,
   useNodesState,
@@ -12,141 +12,295 @@ import ReactFlow, {
   ReactFlowProvider,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { Save, Eye, EyeOff, Home } from 'lucide-react';
-import { Axiom, Argument, Edge as GraphEdge, AxiomCategory, UserSession } from '@philsaxioms/shared';
+import { Save, Eye, EyeOff, Home, Edit } from 'lucide-react';
+import { Node, Axiom, Argument, AxiomCategory, UserSession } from '@philsaxioms/shared';
 import { ArgumentValidator } from '../utils/argument-validator';
-import AxiomNode from './AxiomNode';
-import ArgumentNode from './ArgumentNode';
-import CustomEdge from './CustomEdge';
+import PhilNode from './Node';
+import PhilEdge from './Edge';
 import { calculateHierarchicalLayout } from '../utils/layout';
 import { apiClient } from '../utils/api';
 import { useNavigate } from 'react-router-dom';
+import { useDebounce } from '../hooks/useDebounce';
+
+const isLocalDevelopment = import.meta.env.DEV || window.location.hostname.includes('localhost');
 
 const nodeTypes = {
-  axiom: AxiomNode,
-  argument: ArgumentNode,
+  axiom: PhilNode,
+  argument: PhilNode,
 };
 
 const edgeTypes = {
-  custom: CustomEdge,
+  custom: PhilEdge,
 };
 
 interface GraphViewProps {
-  axioms: Axiom[];
-  arguments: Argument[];
-  edges: GraphEdge[];
+  nodes: Node[];
   categories: AxiomCategory[];
   session: UserSession;
   onSessionUpdate: (updates: Partial<UserSession>) => void;
 }
 
-function GraphViewInner({ axioms, arguments: argumentNodes, edges, categories, session, onSessionUpdate }: GraphViewProps) {
+const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session, onSessionUpdate }: GraphViewProps) {
   const [selectedNode, setSelectedNode] = useState<{node: Axiom | Argument, type: 'axiom' | 'argument'} | null>(null);
   const [showSnapshotModal, setShowSnapshotModal] = useState(false);
   const [snapshotTitle, setSnapshotTitle] = useState('');
   const [snapshotDescription, setSnapshotDescription] = useState('');
   const [isPublic, setIsPublic] = useState(false);
   const [showInvalidNodes, setShowInvalidNodes] = useState(true);
+  const [showEditPanel, setShowEditPanel] = useState(false);
+  const [showNodeForm, setShowNodeForm] = useState(false);
+  const [selectedElements, setSelectedElements] = useState<{nodes: FlowNode[], edges: FlowEdge[]}>({nodes: [], edges: []});
+  const [nodeFormData, setNodeFormData] = useState({
+    id: '',
+    type: 'axiom' as 'axiom' | 'argument',
+    title: '',
+    description: '',
+    conclusion: '',
+    category: 'metaphysics',
+    edges: [] as { to: string; type: 'supports'; description: string }[]
+  });
+
+  // Generate next available numeric ID
+  const getNextId = (): string => {
+    const existingIds = nodes.map(n => parseInt(n.id)).filter(id => !isNaN(id));
+    const maxId = existingIds.length > 0 ? Math.max(...existingIds) : 0;
+    return (maxId + 1).toString();
+  };
   const navigate = useNavigate();
 
   const getCategoryById = (id: string) => categories.find(c => c.id === id);
 
-  // Calculate which arguments are valid based on accepted axioms using activation conditions
+  // const axioms = nodes.filter(node => node.type === 'axiom') as Axiom[];
+  // const argumentNodes = nodes.filter(node => node.type === 'argument') as Argument[];
+
+  // Function to find arguments that build upon this node (have "supports" edges pointing to this node)
+  const getArgumentsBuiltUponThis = (nodeId: string): Array<{node: Node, type: 'axiom' | 'argument'}> => {
+    const dependents: Array<{node: Node, type: 'axiom' | 'argument'}> = [];
+    
+    // Find nodes that have edges pointing to this nodeId with type 'supports' (meaning they build upon this node)
+    for (const node of nodes) {
+      for (const edge of node.edges) {
+        if (edge.to === nodeId && edge.type === 'supports') {
+          dependents.push({ node, type: node.type });
+        }
+      }
+    }
+    
+    return dependents;
+  };
+
+  // Function to find all dependency axioms for a node (recursive search)
+  const getDependencyAxioms = (nodeId: string, visited = new Set<string>()): Axiom[] => {
+    if (visited.has(nodeId)) return [];
+    visited.add(nodeId);
+    
+    const dependencyAxioms = new Set<Axiom>();
+    
+    const currentNode = nodes.find(n => n.id === nodeId);
+    if (!currentNode) return [];
+    
+    // If this is an axiom, return it
+    if (currentNode.type === 'axiom') {
+      dependencyAxioms.add(currentNode as Axiom);
+      return Array.from(dependencyAxioms);
+    }
+    
+    // For arguments, find all dependency nodes recursively
+    for (const edge of currentNode.edges) {
+      if (edge.type === 'supports') {
+        // "supports" edges mean this node builds upon the target
+        const childAxioms = getDependencyAxioms(edge.to, visited);
+        childAxioms.forEach(ax => dependencyAxioms.add(ax));
+      }
+    }
+    
+    return Array.from(dependencyAxioms);
+  };
+
+  // Debounce session changes to reduce expensive calculations
+  const debouncedSession = useDebounce(session, 100);
+  
+  // Calculate which arguments are valid based on accepted axioms using edge relationships
   const validArguments = useMemo(() => {
     const validator = new ArgumentValidator();
-    const acceptedAxioms = new Set(session.acceptedAxioms);
-    return validator.calculateValidArguments(argumentNodes, acceptedAxioms);
-  }, [argumentNodes, session.acceptedAxioms]);
+    const acceptedAxioms = new Set(debouncedSession.acceptedAxioms);
+    return validator.calculateValidArguments(nodes, acceptedAxioms);
+  }, [nodes, debouncedSession.acceptedAxioms]);
 
-  // Calculate hierarchical layout
+  // Calculate hierarchical layout with more stable dependencies
   const layout = useMemo(() => {
-    return calculateHierarchicalLayout(axioms, argumentNodes, edges);
-  }, [axioms, argumentNodes, edges]);
+    return calculateHierarchicalLayout(nodes);
+  }, [nodes.length]);
 
-  const initialNodes: Node[] = useMemo(() => {
-    const nodes: Node[] = [];
+  const initialNodes: FlowNode[] = useMemo(() => {
+    const flowNodes: FlowNode[] = [];
     
-    // Add axiom nodes
-    axioms.forEach(axiom => {
-      const category = getCategoryById(axiom.category);
-      const isAccepted = session.acceptedAxioms.includes(axiom.id);
-      const isRejected = session.rejectedAxioms.includes(axiom.id);
-      const layoutNode = layout.get(axiom.id);
-      
-      if (!showInvalidNodes && !isAccepted) return;
-      
-      nodes.push({
-        id: axiom.id,
-        type: 'axiom',
-        position: layoutNode ? { x: layoutNode.x, y: layoutNode.y } : { x: 0, y: 0 },
-        data: {
-          axiom,
-          category: category || { id: 'unknown', name: 'Unknown', color: '#gray' },
-          isSelected: selectedNode?.node.id === axiom.id,
-          isAccepted,
-          isRejected,
-          onSelect: (axiom: Axiom) => setSelectedNode({ node: axiom, type: 'axiom' }),
-        },
-      });
-    });
+    console.log('DEBUG initialNodes: input nodes length:', nodes.length);
+    console.log('DEBUG initialNodes: first node:', nodes[0]);
+    console.log('DEBUG initialNodes: layout size:', layout.size);
+    console.log('DEBUG initialNodes: validArguments:', validArguments);
+    console.log('DEBUG initialNodes: session:', debouncedSession);
     
-    // Add argument nodes
-    argumentNodes.forEach(argument => {
-      const category = getCategoryById(argument.category);
-      const isValid = validArguments.has(argument.id);
-      const layoutNode = layout.get(argument.id);
+    // Process all nodes
+    nodes.forEach(node => {
+      const category = getCategoryById(node.category);
+      const layoutNode = layout.get(node.id);
       
-      if (!showInvalidNodes && !isValid) return;
-      
-      nodes.push({
-        id: argument.id,
-        type: 'argument',
-        position: layoutNode ? { x: layoutNode.x, y: layoutNode.y } : { x: 0, y: 0 },
-        data: {
-          argument,
-          category: category || { id: 'unknown', name: 'Unknown', color: '#gray' },
-          isSelected: selectedNode?.node.id === argument.id,
-          isValid,
-          onSelect: (argument: Argument) => setSelectedNode({ node: argument, type: 'argument' }),
-        },
-      });
-    });
-    
-    return nodes;
-  }, [axioms, argumentNodes, categories, session, selectedNode, layout, validArguments, showInvalidNodes]);
-
-  const initialEdges: Edge[] = useMemo(() => {
-    return edges
-      .filter(edge => {
-        // Only show edges if both nodes are visible
-        const sourceVisible = initialNodes.some(node => node.id === edge.fromNode);
-        const targetVisible = initialNodes.some(node => node.id === edge.toNode);
-        return sourceVisible && targetVisible;
-      })
-      .map((edge) => {
-        return {
-          id: edge.id,
-          source: edge.fromNode,
-          target: edge.toNode,
-          sourceHandle: 'top',
-          targetHandle: 'bottom',
-          type: 'custom',
+      if (node.type === 'axiom') {
+        const isAccepted = debouncedSession.acceptedAxioms.includes(node.id);
+        const isRejected = debouncedSession.rejectedAxioms.includes(node.id);
+        
+        // Only filter out axioms if showInvalidNodes is false AND there are accepted axioms AND this one isn't accepted
+        if (!showInvalidNodes && debouncedSession.acceptedAxioms.length > 0 && !isAccepted) {
+          return;
+        }
+        
+        flowNodes.push({
+          id: node.id,
+          type: 'axiom',
+          position: layoutNode ? { x: layoutNode.x, y: layoutNode.y } : { x: 0, y: 0 },
           data: {
-            relation: edge.relation,
-            label: edge.relation.type,
+            type: 'axiom' as const,
+            node: node,
+            category: category || { id: 'unknown', name: 'Unknown', color: '#gray' },
+            isSelected: selectedNode?.node.id === node.id,
+            isAccepted,
+            isRejected,
+            onSelect: (axiom: Axiom) => setSelectedNode({ node: axiom, type: 'axiom' }),
+            showHandles: showEditPanel && isLocalDevelopment,
           },
-          animated: edge.relation.strength > 0.8,
-        };
-      });
-  }, [edges, initialNodes]);
+        });
+      } else {
+        const isValid = validArguments.has(node.id);
+        
+        // Only filter out arguments if showInvalidNodes is false AND the argument is invalid
+        if (!showInvalidNodes && !isValid) {
+          return;
+        }
+        
+        flowNodes.push({
+          id: node.id,
+          type: 'argument',
+          position: layoutNode ? { x: layoutNode.x, y: layoutNode.y } : { x: 0, y: 0 },
+          data: {
+            type: 'argument' as const,
+            node: node,
+            category: category || { id: 'unknown', name: 'Unknown', color: '#gray' },
+            isSelected: selectedNode?.node.id === node.id,
+            isValid,
+            onSelect: (argument: Argument) => setSelectedNode({ node: argument, type: 'argument' }),
+            showHandles: showEditPanel && isLocalDevelopment,
+          },
+        });
+      }
+    });
+    
+    console.log('DEBUG initialNodes: final flowNodes length:', flowNodes.length);
+    console.log('DEBUG initialNodes: flowNodes sample:', flowNodes[0]);
+    return flowNodes;
+  }, [nodes, categories, debouncedSession, selectedNode, layout, validArguments, showInvalidNodes]);
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const initialEdges: FlowEdge[] = useMemo(() => {
+    const flowEdges: FlowEdge[] = [];
+    let edgeCounter = 0;
+
+    // Create edges from the embedded edge data in nodes
+    nodes.forEach(sourceNode => {
+      sourceNode.edges.forEach(edge => {
+        const sourceVisible = initialNodes.some(node => node.id === sourceNode.id);
+        const targetVisible = initialNodes.some(node => node.id === edge.to);
+        
+        if (sourceVisible && targetVisible) {
+          flowEdges.push({
+            id: `${sourceNode.id}-${edge.to}-${edgeCounter++}`,
+            source: sourceNode.id,
+            target: edge.to,
+            sourceHandle: 'bottom',
+            targetHandle: 'top',
+            type: 'custom',
+            data: {
+              relation: { type: edge.type },
+              label: edge.type,
+              edgeIndex: 0,
+              totalEdges: 1,
+              description: edge.description,
+            },
+            animated: false,
+          });
+        }
+      });
+    });
+
+    return flowEdges;
+  }, [nodes, initialNodes]);
+
+  const [flowNodes, setFlowNodes, onNodesChange] = useNodesState(initialNodes);
   const [reactFlowEdges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
+
+  // Handle selection changes
+  const onSelectionChange = useCallback((elements: {nodes: FlowNode[], edges: FlowEdge[]}) => {
+    setSelectedElements(elements);
+  }, []);
+
+  // Handle keyboard events for deletion
+  const handleKeyDown = useCallback(async (event: KeyboardEvent) => {
+    if (!showEditPanel || !isLocalDevelopment) return;
+    
+    if (event.key === 'Delete' || event.key === 'Backspace') {
+      event.preventDefault();
+      
+      // Delete selected nodes
+      if (selectedElements.nodes.length > 0) {
+        const nodeToDelete = selectedElements.nodes[0];
+        const nodeData = nodes.find(n => n.id === nodeToDelete.id);
+        
+        if (nodeData && confirm(`Are you sure you want to delete ${nodeData.type} #${nodeData.id}: "${nodeData.title}"?`)) {
+          try {
+            await apiClient.deleteNode(nodeData.id);
+            window.location.reload();
+          } catch (error) {
+            console.error('Failed to delete node:', error);
+            alert('Failed to delete node: ' + (error instanceof Error ? error.message : 'Unknown error'));
+          }
+        }
+      }
+      // Delete selected edges
+      else if (selectedElements.edges.length > 0) {
+        const edgeToDelete = selectedElements.edges[0];
+        const sourceNode = nodes.find(n => n.id === edgeToDelete.source);
+        const targetNode = nodes.find(n => n.id === edgeToDelete.target);
+        
+        if (sourceNode && targetNode && confirm(`Are you sure you want to delete the edge from "${sourceNode.title}" to "${targetNode.title}"?`)) {
+          try {
+            // Remove the edge from the source node
+            const updatedNode = {
+              ...sourceNode,
+              edges: sourceNode.edges.filter(edge => edge.to !== edgeToDelete.target)
+            };
+            
+            // Delete and recreate the node with updated edges
+            await apiClient.deleteNode(sourceNode.id);
+            await apiClient.createNode(updatedNode);
+            window.location.reload();
+          } catch (error) {
+            console.error('Failed to delete edge:', error);
+            alert('Failed to delete edge: ' + (error instanceof Error ? error.message : 'Unknown error'));
+          }
+        }
+      }
+    }
+  }, [selectedElements, showEditPanel, nodes]);
+
+  // Add keyboard event listener
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
 
   const handleAxiomToggle = (axiom: Axiom, accept: boolean) => {
     const updates: Partial<UserSession> = {};
@@ -164,8 +318,8 @@ function GraphViewInner({ axioms, arguments: argumentNodes, edges, categories, s
 
   // Update nodes when session changes
   useEffect(() => {
-    setNodes(initialNodes);
-  }, [initialNodes, setNodes]);
+    setFlowNodes(initialNodes);
+  }, [initialNodes, setFlowNodes]);
 
   // Update edges when nodes change
   useEffect(() => {
@@ -194,17 +348,20 @@ function GraphViewInner({ axioms, arguments: argumentNodes, edges, categories, s
   return (
     <div className="h-screen w-full bg-gray-50">
       <ReactFlow
-        nodes={nodes}
+        nodes={flowNodes}
         edges={reactFlowEdges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        onSelectionChange={onSelectionChange}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         fitView
         fitViewOptions={{ padding: 0.2 }}
         nodesDraggable={false}
         elementsSelectable={true}
+        multiSelectionKeyCode={null}
+        deleteKeyCode={null}
         minZoom={0.2}
         maxZoom={2}
       >
@@ -232,7 +389,7 @@ function GraphViewInner({ axioms, arguments: argumentNodes, edges, categories, s
                 <span className={`px-2 py-1 text-xs font-medium rounded ${
                   selectedNode.type === 'axiom' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
                 }`}>
-                  {selectedNode.type === 'axiom' ? 'Axiom' : `Level ${(selectedNode.node as Argument).level} Argument`}
+                  {selectedNode.type === 'axiom' ? 'Axiom' : 'Argument'}
                 </span>
               </div>
               <h3 className="text-lg font-semibold text-gray-900">
@@ -276,16 +433,71 @@ function GraphViewInner({ axioms, arguments: argumentNodes, edges, categories, s
               </div>
             )}
 
-            {selectedNode.type === 'argument' && (
-              <div className="p-3 bg-gray-50 rounded-lg">
-                <p className="text-sm text-gray-600">
-                  {validArguments.has(selectedNode.node.id) 
-                    ? "✅ This argument is valid based on your accepted axioms"
-                    : "❌ This argument requires additional axioms to be accepted"
-                  }
-                </p>
-              </div>
-            )}
+            {/* Arguments Built Upon This and Required Axioms */}
+            <div className="space-y-3">
+              {(() => {
+                const dependents = getArgumentsBuiltUponThis(selectedNode.node.id);
+                const requiredAxioms = getDependencyAxioms(selectedNode.node.id);
+                
+                return (
+                  <>
+                    {dependents.length > 0 && (
+                      <div className="p-3 bg-blue-50 rounded-lg">
+                        <h4 className="text-sm font-medium text-blue-800 mb-2">
+                          Arguments Built Upon This:
+                        </h4>
+                        <div className="space-y-1">
+                          {dependents.map(dependent => (
+                            <div key={dependent.node.id} className="text-sm text-blue-700">
+                              • #{dependent.node.id} {dependent.node.title} ({dependent.type})
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {requiredAxioms.length > 0 && (
+                      <div className="p-3 bg-orange-50 rounded-lg">
+                        <h4 className="text-sm font-medium text-orange-800 mb-2">
+                          Required Axioms:
+                        </h4>
+                        <div className="space-y-1">
+                          {requiredAxioms.map(axiom => {
+                            const isAccepted = session.acceptedAxioms.includes(axiom.id);
+                            const isRejected = session.rejectedAxioms.includes(axiom.id);
+                            return (
+                              <div 
+                                key={axiom.id} 
+                                className={`text-sm flex items-center gap-2 ${
+                                  isAccepted ? 'text-green-700' : 
+                                  isRejected ? 'text-red-700' : 'text-orange-700'
+                                }`}
+                              >
+                                <span>
+                                  {isAccepted ? '✅' : isRejected ? '❌' : '❓'}
+                                </span>
+                                #{axiom.id} {axiom.title}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {selectedNode.type === 'argument' && (
+                      <div className="p-3 bg-gray-50 rounded-lg">
+                        <p className="text-sm text-gray-600">
+                          {validArguments.has(selectedNode.node.id) 
+                            ? "✅ This argument is valid based on your accepted axioms"
+                            : "❌ This argument requires additional axioms to be accepted"
+                          }
+                        </p>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
 
             <button
               onClick={() => setSelectedNode(null)}
@@ -298,62 +510,352 @@ function GraphViewInner({ axioms, arguments: argumentNodes, edges, categories, s
       )}
 
       {/* Toolbar */}
-      <div className="absolute top-4 left-4 flex gap-2 z-10">
-        <button
-          onClick={() => navigate('/')}
-          className="flex items-center gap-2 bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition-colors"
-        >
-          <Home className="w-4 h-4" />
-          New Session
-        </button>
-        
-        <button
-          onClick={() => setShowSnapshotModal(true)}
-          className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600 transition-colors"
-        >
-          <Save className="w-4 h-4" />
-          Save Snapshot
-        </button>
-        
-        <button
-          onClick={() => setShowInvalidNodes(!showInvalidNodes)}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg shadow-lg transition-colors ${
-            showInvalidNodes 
-              ? 'bg-gray-500 text-white hover:bg-gray-600' 
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-          }`}
-        >
-          {showInvalidNodes ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-          {showInvalidNodes ? 'Hide Invalid' : 'Show All'}
-        </button>
-      </div>
+      <div className="absolute top-4 left-4 right-4 z-10">
+        <div className="flex items-center justify-between bg-white rounded-lg shadow-lg border border-gray-200 px-4 py-2">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center gap-1 bg-gray-600 text-white px-3 py-1.5 rounded-md text-sm hover:bg-gray-700 transition-colors"
+            >
+              <Home className="w-3 h-3" />
+              New
+            </button>
+            
+            <button
+              onClick={() => setShowSnapshotModal(true)}
+              className="flex items-center gap-1 bg-blue-500 text-white px-3 py-1.5 rounded-md text-sm hover:bg-blue-600 transition-colors"
+            >
+              <Save className="w-3 h-3" />
+              Save
+            </button>
+            
+            <button
+              onClick={() => setShowInvalidNodes(!showInvalidNodes)}
+              className={`flex items-center gap-1 px-3 py-1.5 rounded-md text-sm transition-colors ${
+                showInvalidNodes 
+                  ? 'bg-gray-500 text-white hover:bg-gray-600' 
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {showInvalidNodes ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+              {showInvalidNodes ? 'Hide' : 'Show All'}
+            </button>
+            
+            {isLocalDevelopment && (
+              <button
+                onClick={() => setShowEditPanel(!showEditPanel)}
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-md text-sm transition-colors ${
+                  showEditPanel 
+                    ? 'bg-purple-500 text-white hover:bg-purple-600' 
+                    : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+                }`}
+              >
+                <Edit className="w-3 h-3" />
+                Edit
+              </button>
+            )}
+          </div>
 
-      {/* Legend */}
-      <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow-lg border border-gray-200 p-4 z-10">
-        <h4 className="font-semibold text-gray-900 mb-3">Relationship Types</h4>
-        <div className="space-y-2 text-sm">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-0.5 bg-green-500"></div>
-            <span>Implies</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-0.5 bg-red-500" style={{ backgroundImage: 'repeating-linear-gradient(to right, #EF4444 0, #EF4444 3px, transparent 3px, transparent 6px)' }}></div>
-            <span>Contradicts</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-0.5 bg-blue-500"></div>
-            <span>Supports</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-1 bg-purple-500"></div>
-            <span>Requires</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-0.5 bg-orange-500" style={{ backgroundImage: 'repeating-linear-gradient(to right, #F59E0B 0, #F59E0B 2px, transparent 2px, transparent 4px)' }}></div>
-            <span>Assumes</span>
+          {/* Compact Legend */}
+          <div className="flex items-center gap-4 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="text-gray-600">Categories:</span>
+              {categories.slice(0, 4).map(category => (
+                <div key={category.id} className="flex items-center gap-1">
+                  <div 
+                    className="w-2 h-2 rounded"
+                    style={{ backgroundColor: category.color }}
+                  ></div>
+                  <span className="text-gray-500">{category.name.split(' ')[0]}</span>
+                </div>
+              ))}
+            </div>
+            
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-0.5 bg-blue-500"></div>
+              <span className="text-gray-500">Supports</span>
+            </div>
           </div>
         </div>
       </div>
+
+
+      {/* Node Editor Panel */}
+      {isLocalDevelopment && showEditPanel && (
+        <div className="absolute top-20 right-4 w-96 bg-white rounded-xl shadow-xl border border-gray-200 p-6 z-10 max-h-96 overflow-auto">
+          <h3 className="text-lg font-semibold mb-4">Node Editor</h3>
+          <p className="text-sm text-gray-600 mb-4">
+            Create new nodes and connections. Changes are for development only.
+          </p>
+          
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <h4 className="text-sm font-medium text-gray-700">Create Nodes</h4>
+              <button
+                onClick={() => {
+                  setNodeFormData({
+                    id: getNextId(),
+                    type: 'axiom', // Default to axiom, will auto-detect based on edges
+                    title: '',
+                    description: '',
+                    conclusion: '',
+                    category: 'metaphysics',
+                    edges: []
+                  });
+                  setShowNodeForm(true);
+                }}
+                className="w-full text-left px-3 py-2 text-sm bg-blue-50 hover:bg-blue-100 rounded transition-colors border border-blue-200"
+              >
+                + Add Node
+              </button>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="text-sm font-medium text-gray-700">Delete Nodes</h4>
+              <div className="max-h-32 overflow-auto space-y-1">
+                {nodes.map(node => (
+                  <div key={node.id} className="flex items-center justify-between p-2 bg-gray-50 rounded text-xs">
+                    <span className="flex items-center gap-2">
+                      <span className={`px-1 py-0.5 rounded ${node.type === 'axiom' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
+                        #{node.id}
+                      </span>
+                      <span className="truncate max-w-32">{node.title}</span>
+                    </span>
+                    <button
+                      onClick={async () => {
+                        if (confirm(`Delete ${node.type} #${node.id}: "${node.title}"?`)) {
+                          try {
+                            await apiClient.deleteNode(node.id);
+                            window.location.reload();
+                          } catch (error) {
+                            console.error('Failed to delete node:', error);
+                            alert('Failed to delete node: ' + (error instanceof Error ? error.message : 'Unknown error'));
+                          }
+                        }
+                      }}
+                      className="px-2 py-1 text-red-600 hover:bg-red-50 rounded"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowEditPanel(false)}
+              className="w-full text-center px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded transition-colors"
+            >
+              Close Editor
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Node Creation Form */}
+      {isLocalDevelopment && showNodeForm && (
+        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20">
+          <div className="bg-white rounded-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-auto">
+            <h3 className="text-lg font-semibold mb-4">
+              Add Node
+            </h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Node type will be automatically determined: nodes with incoming support are arguments, nodes without are axioms.
+            </p>
+            
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    ID (Auto-generated)
+                  </label>
+                  <input
+                    type="text"
+                    value={`#${nodeFormData.id}`}
+                    readOnly
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Category *
+                  </label>
+                  <select
+                    value={nodeFormData.category}
+                    onChange={(e) => setNodeFormData(prev => ({ ...prev, category: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  >
+                    {categories.map(cat => (
+                      <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Title *
+                </label>
+                <input
+                  type="text"
+                  value={nodeFormData.title}
+                  onChange={(e) => setNodeFormData(prev => ({ ...prev, title: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  placeholder="Brief title for the node"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description *
+                </label>
+                <textarea
+                  value={nodeFormData.description}
+                  onChange={(e) => setNodeFormData(prev => ({ ...prev, description: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  rows={3}
+                  placeholder="Detailed explanation..."
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Conclusion (Optional - for arguments only)
+                </label>
+                <input
+                  type="text"
+                  value={nodeFormData.conclusion}
+                  onChange={(e) => setNodeFormData(prev => ({ ...prev, conclusion: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  placeholder="What this argument concludes (leave empty for axioms)"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Supports (Optional)
+                </label>
+                <p className="text-xs text-gray-500 mb-2">
+                  Add node IDs that this node supports (builds upon). Use # format like #1, #2, etc.
+                </p>
+                <div className="space-y-2 max-h-40 overflow-auto">
+                  {nodeFormData.edges.map((edge, index) => (
+                    <div key={index} className="flex gap-2 items-center p-2 bg-gray-50 rounded">
+                      <span className="text-sm text-gray-600 px-2">Supports</span>
+                      <input
+                        type="text"
+                        value={edge.to}
+                        onChange={(e) => {
+                          const newEdges = [...nodeFormData.edges];
+                          newEdges[index].to = e.target.value;
+                          setNodeFormData(prev => ({ ...prev, edges: newEdges }));
+                        }}
+                        placeholder="#1"
+                        className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm"
+                      />
+                      <button
+                        onClick={() => {
+                          const newEdges = nodeFormData.edges.filter((_, i) => i !== index);
+                          setNodeFormData(prev => ({ ...prev, edges: newEdges }));
+                        }}
+                        className="px-2 py-1 text-red-600 hover:bg-red-50 rounded text-sm"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    onClick={() => {
+                      setNodeFormData(prev => ({
+                        ...prev,
+                        edges: [...prev.edges, { to: '', type: 'supports', description: '' }]
+                      }));
+                    }}
+                    className="w-full px-3 py-2 text-sm border border-dashed border-gray-300 rounded hover:bg-gray-50"
+                  >
+                    + Add Support Connection
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex gap-2 mt-6">
+              <button
+                onClick={async () => {
+                  try {
+                    // Auto-detect node type: if it has edges (supports other nodes), it's an argument, otherwise it's an axiom
+                    const hasEdges = nodeFormData.edges.some(edge => edge.to && edge.to.trim());
+                    const hasConclusion = nodeFormData.conclusion && nodeFormData.conclusion.trim();
+                    const isArgument = hasEdges || hasConclusion;
+                    
+                    let newNode: Node;
+                    
+                    if (isArgument) {
+                      newNode = {
+                        id: nodeFormData.id,
+                        type: 'argument',
+                        title: nodeFormData.title,
+                        description: nodeFormData.description,
+                        conclusion: nodeFormData.conclusion || 'Auto-generated argument',
+                        category: nodeFormData.category,
+                        edges: nodeFormData.edges.filter(edge => edge.to && edge.type)
+                      } as Argument;
+                    } else {
+                      newNode = {
+                        id: nodeFormData.id,
+                        type: 'axiom',
+                        title: nodeFormData.title,
+                        description: nodeFormData.description,
+                        category: nodeFormData.category,
+                        edges: nodeFormData.edges.filter(edge => edge.to && edge.type)
+                      } as Axiom;
+                    }
+
+                    // Clean up edge targets (remove # prefix if present)
+                    const cleanedNode = {
+                      ...newNode,
+                      edges: newNode.edges.map(edge => ({
+                        ...edge,
+                        to: edge.to.startsWith('#') ? edge.to.substring(1) : edge.to
+                      }))
+                    };
+
+                    await apiClient.createNode(cleanedNode);
+                    
+                    // Reset form and close modal
+                    setNodeFormData({
+                      id: '',
+                      type: 'axiom',
+                      title: '',
+                      description: '',
+                      conclusion: '',
+                      category: 'metaphysics',
+                      edges: []
+                    });
+                    setShowNodeForm(false);
+                    
+                    // Refresh the page to show the new node
+                    window.location.reload();
+                  } catch (error) {
+                    console.error('Failed to create node:', error);
+                    alert('Failed to create node: ' + (error instanceof Error ? error.message : 'Unknown error'));
+                  }
+                }}
+                disabled={!nodeFormData.id || !nodeFormData.title || !nodeFormData.description}
+                className="flex-1 bg-purple-500 text-white py-2 px-4 rounded-lg hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Create Node
+              </button>
+              <button
+                onClick={() => setShowNodeForm(false)}
+                className="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Snapshot Modal */}
       {showSnapshotModal && (
@@ -422,7 +924,7 @@ function GraphViewInner({ axioms, arguments: argumentNodes, edges, categories, s
       )}
     </div>
   );
-}
+});
 
 export default function GraphView(props: GraphViewProps) {
   return (

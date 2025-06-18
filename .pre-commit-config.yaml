@@ -13,8 +13,20 @@ repos:
 
   - repo: local
     hooks:
+      - id: auto-fix-arguments
+        name: Auto-fix Unreachable Arguments
+        entry: node scripts/auto-fix-arguments.js --auto-fix
+        language: node
+        files: ^data/.*\.ya?ml$
+        pass_filenames: false
+        always_run: false
+        stages: [commit]
+        verbose: true
+
+  - repo: local
+    hooks:
       - id: facio-validate
-        name: Run Facio Validation
+        name: Run Facio Validation (After Auto-fix)
         entry: ./facio
         args: [validate]
         language: script

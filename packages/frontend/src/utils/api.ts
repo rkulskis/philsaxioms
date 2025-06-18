@@ -1,4 +1,4 @@
-import { GraphData, QuestionnaireItem, UserSession, Axiom } from '@philsaxioms/shared';
+import { GraphData, QuestionnaireItem, UserSession, Axiom, Node } from '@philsaxioms/shared';
 import { BrowserHttpClient } from './browser-http-client';
 import staticClient from '../api/static-client';
 
@@ -7,22 +7,54 @@ const isStaticDeployment = !import.meta.env.DEV && !window.location.hostname.inc
 
 export class ApiClient {
   private httpClient: BrowserHttpClient;
+  private graphDataCache: GraphData | null = null;
+  private questionnaireCache: QuestionnaireItem[] | null = null;
 
   constructor() {
     this.httpClient = new BrowserHttpClient(API_BASE);
+    // Preload data in the background for faster access
+    this.preloadData();
+  }
+
+  private async preloadData() {
+    try {
+      // Start preloading graph data immediately
+      if (isStaticDeployment) {
+        // Preload static data
+        staticClient.getGraphData().then(data => this.graphDataCache = data);
+        staticClient.getQuestionnaire().then(data => this.questionnaireCache = data);
+      }
+    } catch (error) {
+      // Silently fail - data will be loaded on demand
+      console.debug('Preload failed:', error);
+    }
   }
 
   async fetchGraphData(): Promise<GraphData> {
+    // Return cached data if available for static deployment
+    if (isStaticDeployment && this.graphDataCache) {
+      return this.graphDataCache;
+    }
+    
     if (isStaticDeployment) {
-      return await staticClient.getGraphData();
+      const data = await staticClient.getGraphData();
+      this.graphDataCache = data;
+      return data;
     }
     
     return this.httpClient.get<GraphData>('/graph');
   }
 
   async fetchQuestionnaire(): Promise<QuestionnaireItem[]> {
+    // Return cached data if available for static deployment
+    if (isStaticDeployment && this.questionnaireCache) {
+      return this.questionnaireCache;
+    }
+    
     if (isStaticDeployment) {
-      return await staticClient.getQuestionnaire();
+      const data = await staticClient.getQuestionnaire();
+      this.questionnaireCache = data;
+      return data;
     }
     
     return this.httpClient.get<QuestionnaireItem[]>('/questionnaire');
@@ -71,6 +103,22 @@ export class ApiClient {
 
   async fetchPublicSnapshots(): Promise<any[]> {
     return this.httpClient.get<any[]>('/snapshots');
+  }
+
+  async createNode(node: Node): Promise<{ message: string; node: Node }> {
+    if (isStaticDeployment) {
+      throw new Error('Node creation is not available in static deployment');
+    }
+    
+    return this.httpClient.post<{ message: string; node: Node }>('/nodes', node);
+  }
+
+  async deleteNode(nodeId: string): Promise<{ message: string }> {
+    if (isStaticDeployment) {
+      throw new Error('Node deletion is not available in static deployment');
+    }
+    
+    return this.httpClient.delete<{ message: string }>(`/nodes/${nodeId}`);
   }
 }
 

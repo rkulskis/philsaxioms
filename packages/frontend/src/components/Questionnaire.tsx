@@ -139,15 +139,10 @@ export default function Questionnaire({ onComplete, onSkip, categories }: Questi
 
             {/* Question */}
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              {currentQuestion.question}
+              {currentQuestion.text}
             </h2>
 
-            {/* Explanation */}
-            {currentQuestion.explanation && (
-              <p className="text-gray-600 mb-8 leading-relaxed">
-                {currentQuestion.explanation}
-              </p>
-            )}
+            {/* Explanation removed in new format */}
 
             {/* Answer buttons */}
             <div className="flex gap-4 mb-6">

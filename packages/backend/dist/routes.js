@@ -22,10 +22,37 @@ function createRoutes(dataLoader) {
         const connections = await dataLoader.getConnectedNodes(req.params.id);
         response_handler_1.ResponseHandler.handleSuccess(res, connections);
     }));
+    // Create new node (axiom or argument)
+    router.post('/api/nodes', response_handler_1.ResponseHandler.wrapAsyncRoute(async (req, res) => {
+        const nodeData = req.body;
+        // Validate required fields
+        if (!nodeData.id || !nodeData.title || !nodeData.description || !nodeData.type) {
+            return res.status(400).json({ error: 'Missing required fields: id, title, description, type' });
+        }
+        // Check if node with this ID already exists
+        const existingNode = await dataLoader.getNodeById(nodeData.id);
+        if (existingNode) {
+            return res.status(409).json({ error: 'Node with this ID already exists' });
+        }
+        await dataLoader.addNode(nodeData);
+        response_handler_1.ResponseHandler.handleSuccess(res, { message: 'Node created successfully', node: nodeData });
+    }));
+    // Delete node by ID
+    router.delete('/api/nodes/:id', response_handler_1.ResponseHandler.wrapAsyncRoute(async (req, res) => {
+        const nodeId = req.params.id;
+        // Check if node exists
+        const existingNode = await dataLoader.getNodeById(nodeId);
+        if (!existingNode) {
+            return res.status(404).json({ error: 'Node not found' });
+        }
+        await dataLoader.deleteNode(nodeId);
+        response_handler_1.ResponseHandler.handleSuccess(res, { message: 'Node deleted successfully' });
+    }));
     // Get specific argument by ID
     router.get('/api/arguments/:id', response_handler_1.ResponseHandler.createFindByIdRoute(async (id) => {
         const data = await dataLoader.loadGraphData();
-        return data.arguments.find(arg => arg.id === id) || null;
+        const argument = data.nodes.find(node => node.id === id && node.type === 'argument');
+        return argument || null;
     }, 'Failed to load argument', 'Argument not found'));
     // Simple in-memory storage (replace with database in production)
     const sessions = new Map();
@@ -79,13 +106,13 @@ function createRoutes(dataLoader) {
             }
             const data = await dataLoader.loadGraphData();
             const relevantAxioms = session.acceptedAxioms;
-            const relevantEdges = data.edges.filter(edge => relevantAxioms.includes(edge.fromNode) && relevantAxioms.includes(edge.toNode));
+            const relevantNodes = data.nodes.filter(node => node.type === 'axiom' && relevantAxioms.includes(node.id));
             const snapshot = {
                 id: (0, shared_1.generateSnapshotId)(),
                 title,
                 description,
                 axioms: relevantAxioms,
-                edges: relevantEdges.map(e => e.id),
+                nodes: relevantNodes.map(n => n.id),
                 metadata: {
                     isPublic,
                     createdBy: sessionId,
@@ -108,12 +135,10 @@ function createRoutes(dataLoader) {
                 return res.status(404).json({ error: 'Snapshot not found' });
             }
             const data = await dataLoader.loadGraphData();
-            const snapshotAxioms = data.axioms.filter(axiom => snapshot.axioms.includes(axiom.id));
-            const snapshotEdges = data.edges.filter(edge => snapshot.edges.includes(edge.id));
+            const snapshotNodes = data.nodes.filter(node => snapshot.nodes ? snapshot.nodes.includes(node.id) : snapshot.axioms.includes(node.id));
             res.json({
                 ...snapshot,
-                axiomData: snapshotAxioms,
-                edgeData: snapshotEdges,
+                nodeData: snapshotNodes,
                 categories: data.categories,
             });
         }
@@ -131,7 +156,7 @@ function createRoutes(dataLoader) {
             title: snapshot.title,
             description: snapshot.description,
             createdAt: snapshot.createdAt,
-            axiomCount: snapshot.axioms.length,
+            nodeCount: snapshot.nodes ? snapshot.nodes.length : snapshot.axioms ? snapshot.axioms.length : 0,
         }));
         res.json(publicSnapshots);
     });

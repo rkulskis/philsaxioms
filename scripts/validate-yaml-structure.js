@@ -298,27 +298,61 @@ class YAMLStructureValidator {
 
   // Check if an argument can be activated by any valid combination of axioms
   canArgumentBeActivatedByAnyAxiomCombination(argument, argumentMap, axiomIds) {
-    // Try all possible combinations of axioms (this is computationally intensive but necessary for validation)
-    const axiomArray = Array.from(axiomIds);
-    const maxCombinations = Math.min(Math.pow(2, axiomArray.length), 1000); // Limit to prevent timeout
+    // Use recursive path-finding instead of brute force
+    return this.findActivationPath(argument, argumentMap, axiomIds, new Set(), new Set());
+  }
+
+  // Recursively find if there's a path to activate an argument
+  findActivationPath(argument, argumentMap, axiomIds, currentAxioms, visited) {
+    if (visited.has(argument.id)) return false; // Prevent cycles
+    if (!argument.activation_conditions) return false;
     
-    for (let i = 0; i < maxCombinations; i++) {
-      const acceptedAxioms = new Set();
-      
-      // Convert number to binary to represent axiom combination
-      for (let j = 0; j < axiomArray.length; j++) {
-        if (i & (1 << j)) {
-          acceptedAxioms.add(axiomArray[j]);
+    visited.add(argument.id);
+    
+    const conditions = argument.activation_conditions;
+    const requiredAxioms = new Set(currentAxioms);
+    
+    // Add required axioms
+    if (conditions.required_axioms) {
+      for (const axId of conditions.required_axioms) {
+        if (axiomIds.has(axId)) {
+          requiredAxioms.add(axId);
+        } else {
+          visited.delete(argument.id);
+          return false; // Required axiom doesn't exist
         }
-      }
-      
-      // Test if this combination can activate the argument
-      if (this.canArgumentBeActivatedWithAxioms(argument, argumentMap, acceptedAxioms)) {
-        return true;
       }
     }
     
-    return false;
+    // Check forbidden axioms
+    if (conditions.forbidden_axioms) {
+      for (const axId of conditions.forbidden_axioms) {
+        if (requiredAxioms.has(axId)) {
+          visited.delete(argument.id);
+          return false; // Conflict with forbidden axiom
+        }
+      }
+    }
+    
+    // Check required arguments recursively
+    if (conditions.required_arguments) {
+      for (const argId of conditions.required_arguments) {
+        const requiredArg = argumentMap.get(argId);
+        if (!requiredArg) {
+          visited.delete(argument.id);
+          return false; // Required argument doesn't exist
+        }
+        
+        // Recursively check if required argument can be activated
+        if (!this.findActivationPath(requiredArg, argumentMap, axiomIds, requiredAxioms, visited)) {
+          visited.delete(argument.id);
+          return false; // Required argument cannot be activated
+        }
+      }
+    }
+    
+    visited.delete(argument.id);
+    return true; // All conditions can be satisfied
   }
 
   // Check if an argument can be activated with a specific set of accepted axioms

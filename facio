@@ -26,6 +26,11 @@ Commands:
                       axiom paths, checks for circular dependencies, and
                       validates logical consistency.
 
+  fix-arguments [--auto-fix]
+                      Analyze unreachable arguments and suggest axiom fixes.
+                      With --auto-fix, automatically adds necessary axioms
+                      and questionnaire items to make all arguments reachable.
+
   deploy [--gcloud-push]
                       Deploy the app using Google Cloud Run. If
                       '--gcloud-push' is provided, the script will push the
@@ -38,6 +43,8 @@ Examples:
   ./facio test
   ./facio build
   ./facio validate
+  ./facio fix-arguments
+  ./facio fix-arguments --auto-fix
   ./facio deploy --gcloud-push
 
 EOF
@@ -189,6 +196,26 @@ case "${1:-}" in
       log_success "YAML validation passed!"
     else
       log_error "YAML validation failed! Fix the errors before proceeding."
+      exit 1
+    fi
+    ;;
+    
+  "fix-arguments")
+    log_info "Analyzing and fixing unreachable arguments..."
+    
+    # Check if auto-fix flag is passed
+    if [[ "${2:-}" == "--auto-fix" ]]; then
+      log_info "Auto-fix mode enabled - will add necessary axioms"
+      node scripts/auto-fix-arguments.js --auto-fix
+    else
+      log_info "Analysis mode - will suggest fixes"
+      node scripts/auto-fix-arguments.js
+    fi
+    
+    if [ $? -eq 0 ]; then
+      log_success "Argument analysis completed!"
+    else
+      log_error "Argument analysis found issues that need attention."
       exit 1
     fi
     ;;
