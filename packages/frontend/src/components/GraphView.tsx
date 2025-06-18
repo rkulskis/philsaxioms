@@ -57,7 +57,8 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
     description: '',
     conclusion: '',
     category: 'metaphysics',
-    edges: [] as { to: string; type: 'supports'; description: string }[]
+    edges: [] as { to: string; type: 'supports'; description: string }[],
+    position: { x: 0, y: 0 }
   });
 
   // Generate next available numeric ID
@@ -215,8 +216,8 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
             id: `${sourceNode.id}-${edge.to}-${edgeCounter++}`,
             source: sourceNode.id,
             target: edge.to,
-            sourceHandle: 'bottom',
-            targetHandle: 'top',
+            sourceHandle: 'source',
+            targetHandle: 'target',
             type: 'custom',
             data: {
               relation: { type: edge.type },
@@ -245,19 +246,62 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
   // Handle selection changes
   const onSelectionChange = useCallback((elements: {nodes: FlowNode[], edges: FlowEdge[]}) => {
     setSelectedElements(elements);
+    console.log('Selection changed:', elements); // Debug log
   }, []);
 
-  // Handle keyboard events for deletion
+  // Handle pane clicks for creating nodes
+  const onPaneClick = useCallback((event: React.MouseEvent<Element, MouseEvent>) => {
+    if (!showEditPanel || !isLocalDevelopment) return;
+    
+    // Get the click position relative to the flow
+    const reactFlowBounds = (event.target as Element).closest('.react-flow')?.getBoundingClientRect();
+    if (!reactFlowBounds) return;
+    
+    const position = {
+      x: event.clientX - reactFlowBounds.left - 140, // Offset for node width
+      y: event.clientY - reactFlowBounds.top - 75   // Offset for node height
+    };
+    
+    // Set up node form data with position
+    setNodeFormData({
+      id: getNextId(),
+      type: 'axiom',
+      title: '',
+      description: '',
+      conclusion: '',
+      category: 'metaphysics',
+      edges: [],
+      position // Add position to form data
+    });
+    setShowNodeForm(true);
+  }, [showEditPanel, getNextId]);
+
+  // Handle keyboard events for deletion and ESC
   const handleKeyDown = useCallback(async (event: KeyboardEvent) => {
+    // ESC key to close modals
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      if (showNodeForm) {
+        setShowNodeForm(false);
+        return;
+      }
+      if (showSnapshotModal) {
+        setShowSnapshotModal(false);
+        return;
+      }
+    }
+    
     if (!showEditPanel || !isLocalDevelopment) return;
     
     if (event.key === 'Delete' || event.key === 'Backspace') {
       event.preventDefault();
+      console.log('Delete key pressed, selected elements:', selectedElements);
       
       // Delete selected nodes
       if (selectedElements.nodes.length > 0) {
         const nodeToDelete = selectedElements.nodes[0];
         const nodeData = nodes.find(n => n.id === nodeToDelete.id);
+        console.log('Attempting to delete node:', nodeData);
         
         if (nodeData && confirm(`Are you sure you want to delete ${nodeData.type} #${nodeData.id}: "${nodeData.title}"?`)) {
           try {
@@ -274,6 +318,7 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
         const edgeToDelete = selectedElements.edges[0];
         const sourceNode = nodes.find(n => n.id === edgeToDelete.source);
         const targetNode = nodes.find(n => n.id === edgeToDelete.target);
+        console.log('Attempting to delete edge:', edgeToDelete, sourceNode, targetNode);
         
         if (sourceNode && targetNode && confirm(`Are you sure you want to delete the edge from "${sourceNode.title}" to "${targetNode.title}"?`)) {
           try {
@@ -292,9 +337,11 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
             alert('Failed to delete edge: ' + (error instanceof Error ? error.message : 'Unknown error'));
           }
         }
+      } else {
+        console.log('No elements selected for deletion');
       }
     }
-  }, [selectedElements, showEditPanel, nodes]);
+  }, [selectedElements, showEditPanel, nodes, showNodeForm, showSnapshotModal]);
 
   // Add keyboard event listener
   useEffect(() => {
@@ -346,7 +393,9 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
   };
 
   return (
-    <div className="h-screen w-full bg-gray-50">
+    <div className={`h-screen w-full transition-colors duration-200 ${
+      showEditPanel && isLocalDevelopment ? 'bg-purple-50' : 'bg-gray-50'
+    }`}>
       <ReactFlow
         nodes={flowNodes}
         edges={reactFlowEdges}
@@ -354,13 +403,16 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onSelectionChange={onSelectionChange}
+        onPaneClick={onPaneClick}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         fitView
         fitViewOptions={{ padding: 0.2 }}
-        nodesDraggable={false}
+        nodesDraggable={isLocalDevelopment && showEditPanel}
+        nodesConnectable={isLocalDevelopment && showEditPanel}
         elementsSelectable={true}
-        multiSelectionKeyCode={null}
+        selectNodesOnDrag={false}
+        multiSelectionKeyCode="Meta"
         deleteKeyCode={null}
         minZoom={0.2}
         maxZoom={2}
@@ -588,26 +640,32 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
             Create new nodes and connections. Changes are for development only.
           </p>
           
+          {/* Selection Status */}
+          <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+            <h4 className="text-sm font-medium text-gray-700 mb-2">Selection Status</h4>
+            {selectedElements.nodes.length > 0 && (
+              <p className="text-sm text-blue-600">
+                📍 Selected: {selectedElements.nodes.length} node(s) - Press DELETE to remove
+              </p>
+            )}
+            {selectedElements.edges.length > 0 && (
+              <p className="text-sm text-purple-600">
+                ↔️ Selected: {selectedElements.edges.length} edge(s) - Press DELETE to remove
+              </p>
+            )}
+            {selectedElements.nodes.length === 0 && selectedElements.edges.length === 0 && (
+              <p className="text-sm text-gray-500">
+                ⚪ No selection - Click to select nodes/edges
+              </p>
+            )}
+          </div>
+          
           <div className="space-y-4">
             <div className="space-y-2">
               <h4 className="text-sm font-medium text-gray-700">Create Nodes</h4>
-              <button
-                onClick={() => {
-                  setNodeFormData({
-                    id: getNextId(),
-                    type: 'axiom', // Default to axiom, will auto-detect based on edges
-                    title: '',
-                    description: '',
-                    conclusion: '',
-                    category: 'metaphysics',
-                    edges: []
-                  });
-                  setShowNodeForm(true);
-                }}
-                className="w-full text-left px-3 py-2 text-sm bg-blue-50 hover:bg-blue-100 rounded transition-colors border border-blue-200"
-              >
-                + Add Node
-              </button>
+              <p className="text-sm text-gray-600 bg-purple-50 p-3 rounded-lg border border-purple-200">
+                💡 Click anywhere on the background to create a new node at that position
+              </p>
             </div>
 
             <div className="space-y-2">
@@ -788,7 +846,7 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
                     const hasConclusion = nodeFormData.conclusion && nodeFormData.conclusion.trim();
                     const isArgument = hasEdges || hasConclusion;
                     
-                    let newNode: Node;
+                    let newNode: Node & { position?: { x: number; y: number } };
                     
                     if (isArgument) {
                       newNode = {
@@ -798,8 +856,9 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
                         description: nodeFormData.description,
                         conclusion: nodeFormData.conclusion || 'Auto-generated argument',
                         category: nodeFormData.category,
-                        edges: nodeFormData.edges.filter(edge => edge.to && edge.type)
-                      } as Argument;
+                        edges: nodeFormData.edges.filter(edge => edge.to && edge.type),
+                        position: nodeFormData.position
+                      } as Argument & { position: { x: number; y: number } };
                     } else {
                       newNode = {
                         id: nodeFormData.id,
@@ -807,8 +866,9 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
                         title: nodeFormData.title,
                         description: nodeFormData.description,
                         category: nodeFormData.category,
-                        edges: nodeFormData.edges.filter(edge => edge.to && edge.type)
-                      } as Axiom;
+                        edges: nodeFormData.edges.filter(edge => edge.to && edge.type),
+                        position: nodeFormData.position
+                      } as Axiom & { position: { x: number; y: number } };
                     }
 
                     // Clean up edge targets (remove # prefix if present)
@@ -830,7 +890,8 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
                       description: '',
                       conclusion: '',
                       category: 'metaphysics',
-                      edges: []
+                      edges: [],
+                      position: { x: 0, y: 0 }
                     });
                     setShowNodeForm(false);
                     

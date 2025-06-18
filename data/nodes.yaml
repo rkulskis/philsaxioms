@@ -91,3 +91,10 @@ nodes:
       - to: "8"
         type: supports
         description: Builds on first cause necessity
+  - id: "10"
+    type: argument
+    title: a
+    description: b
+    conclusion: c
+    category: metaphysics
+    edges: []

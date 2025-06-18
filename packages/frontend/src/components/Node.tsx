@@ -251,15 +251,15 @@ export default memo(function Node({ data }: NodeProps) {
       {/* React Flow handles for connections */}
       <Handle 
         type="target" 
-        position={Position.Bottom} 
-        className={showHandles ? "w-3 h-3 bg-blue-500 border-2 border-white" : "opacity-0"} 
-        id="top" 
+        position={Position.Top} 
+        className={showHandles ? "w-4 h-4 bg-blue-500 border-2 border-white shadow-lg" : "opacity-0"} 
+        id="target" 
       />
       <Handle 
         type="source" 
-        position={Position.Top} 
-        className={showHandles ? "w-3 h-3 bg-blue-500 border-2 border-white" : "opacity-0"} 
-        id="bottom" 
+        position={Position.Bottom} 
+        className={showHandles ? "w-4 h-4 bg-blue-500 border-2 border-white shadow-lg" : "opacity-0"} 
+        id="source" 
       />
 
       {/* Lego-style connectors for axioms */}
