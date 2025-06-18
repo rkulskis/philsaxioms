@@ -51,9 +51,9 @@ const getNodeStatus = (data: NodeData) => {
 const getNodeColors = (data: NodeData, status: string) => {
   if (data.type === 'axiom') {
     switch (status) {
-      case 'accepted': return 'border-green-500 bg-green-50';
-      case 'rejected': return 'border-red-500 bg-red-50';
-      default: return 'border-gray-300';
+      case 'accepted': return 'border-blue-500 bg-blue-50 border-4';
+      case 'rejected': return 'border-red-400 bg-red-50 border-2 opacity-60';
+      default: return 'border-gray-300 border-2';
     }
   } else {
     return status === 'valid' ? 'border-green-400 bg-green-50' : 'border-gray-300 bg-gray-50';

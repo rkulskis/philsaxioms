@@ -98,3 +98,6 @@ nodes:
     conclusion: c
     category: metaphysics
     edges: []
+    position:
+      x: 367
+      y: 193

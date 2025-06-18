@@ -151,10 +151,8 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
         const isAccepted = debouncedSession.acceptedAxioms.includes(node.id);
         const isRejected = debouncedSession.rejectedAxioms.includes(node.id);
         
-        // Only filter out axioms if showInvalidNodes is false AND there are accepted axioms AND this one isn't accepted
-        if (!showInvalidNodes && debouncedSession.acceptedAxioms.length > 0 && !isAccepted) {
-          return;
-        }
+        // Never hide axioms - they are the foundation of the graph
+        // We'll use visual styling to indicate their status instead
         
         flowNodes.push({
           id: node.id,
@@ -434,7 +432,7 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
 
       {/* Sidebar */}
       {selectedNode && (
-        <div className="absolute top-4 right-4 w-80 bg-white rounded-xl shadow-xl border border-gray-200 p-6 z-10">
+        <div className="absolute top-16 right-4 w-80 bg-white rounded-xl shadow-xl border border-gray-200 p-6 z-10">
           <div className="space-y-4">
             <div>
               <div className="flex items-center gap-2 mb-2">
@@ -562,8 +560,8 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
       )}
 
       {/* Toolbar */}
-      <div className="absolute top-4 left-4 right-4 z-10">
-        <div className="flex items-center justify-between bg-white rounded-lg shadow-lg border border-gray-200 px-4 py-2">
+      <div className="absolute top-0 left-0 right-0 z-10">
+        <div className="flex items-center justify-between bg-white shadow-lg border-b border-gray-200 px-4 py-2">
           <div className="flex items-center gap-2">
             <button
               onClick={() => navigate('/')}
@@ -634,7 +632,7 @@ const GraphViewInner = memo(function GraphViewInner({ nodes, categories, session
 
       {/* Node Editor Panel */}
       {isLocalDevelopment && showEditPanel && (
-        <div className="absolute top-20 right-4 w-96 bg-white rounded-xl shadow-xl border border-gray-200 p-6 z-10 max-h-96 overflow-auto">
+        <div className="absolute top-16 right-4 w-96 bg-white rounded-xl shadow-xl border border-gray-200 p-6 z-10 max-h-96 overflow-auto">
           <h3 className="text-lg font-semibold mb-4">Node Editor</h3>
           <p className="text-sm text-gray-600 mb-4">
             Create new nodes and connections. Changes are for development only.
