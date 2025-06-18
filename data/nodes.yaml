@@ -1,0 +1,93 @@
+nodes:
+  - id: "1"
+    type: axiom
+    title: Something exists
+    description: At minimum, I exist as a thinking being. This is self-evident and
+      cannot be coherently denied.
+    category: metaphysics
+    edges: []
+  - id: "2"
+    type: axiom
+    title: Principle of non-contradiction
+    description: Something cannot both be and not be in the same respect at the same
+      time. Contradictory statements cannot both be true.
+    category: logic
+    edges: []
+  - id: "3"
+    type: axiom
+    title: Senses provide knowledge of reality
+    description: Our senses, though sometimes mistaken, generally provide reliable
+      information about the external world.
+    category: epistemology
+    edges: []
+  - id: "4"
+    type: axiom
+    title: Principle of causation
+    description: Every effect has a cause. Nothing comes into being without a
+      sufficient reason for its existence.
+    category: metaphysics
+    edges: []
+  - id: "5"
+    type: axiom
+    title: Change and motion occur
+    description: We observe that things change, move, and are actualized from
+      potency to act. This is evident to our senses.
+    category: metaphysics
+    edges: []
+  - id: "6"
+    type: argument
+    title: An external world exists
+    description: Given that our senses are generally reliable and we observe
+      consistent patterns, there exists a world of material objects external to
+      our minds.
+    conclusion: Material reality exists independently of our consciousness
+    category: metaphysics
+    edges:
+      - to: "1"
+        type: supports
+        description: Builds on existence of self
+      - to: "3"
+        type: supports
+        description: Builds on reliable senses
+      - to: "2"
+        type: supports
+        description: Builds on non-contradiction principle
+  - id: "7"
+    type: argument
+    title: Causal series exist in nature
+    description: Since change occurs and every effect has a cause, there exist
+      chains of causation connecting events in the natural world.
+    conclusion: Reality is structured by causal relationships
+    category: metaphysics
+    edges:
+      - to: "5"
+        type: supports
+        description: Builds on change occurring
+      - to: "4"
+        type: supports
+        description: Builds on causation principle
+  - id: "8"
+    type: argument
+    title: A first cause is necessary
+    description: Since infinite regress of causes is impossible, there must be a
+      first uncaused cause that explains the existence of all other things.
+    conclusion: A first uncaused cause must exist
+    category: theology
+    edges:
+      - to: "7"
+        type: supports
+        description: Builds on causal series
+      - to: "4"
+        type: supports
+        description: Builds on causation principle
+  - id: "9"
+    type: argument
+    title: God exists as the first cause
+    description: The first uncaused cause, which we call God, must exist as the
+      ultimate explanation for all existence and change in the universe.
+    conclusion: God exists as the first cause of all things
+    category: theology
+    edges:
+      - to: "8"
+        type: supports
+        description: Builds on first cause necessity

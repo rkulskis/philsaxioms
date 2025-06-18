@@ -4,10 +4,18 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Source maps and generated files
+*.map
+*.js.map
+
 # Build outputs
 dist/
 build/
 *.tsbuildinfo
+packages/*/dist/
+packages/*/build/
+packages/backend/public/
+packages/frontend/dist/
 
 # Environment variables
 .env
